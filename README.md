@@ -1,23 +1,33 @@
-# owntracks-php-client
+owntracks-php-client
+====================
+
 A simple and responsive self-hosted solution to record and map [Owntracks](https://owntracks.org/) [http payloads](http://owntracks.org/booklet/tech/http/).
 
-## Screenshots
+Screenshots
+-----------
+
 ### Location records mapping
 ![Desktop view](docs/screenshot1.png?raw=true)
 
 ### Responsible interface & controls
 ![Responsive view](docs/screenshot2.png?raw=true)
 
-## Features
+
+Features
+--------
+
 * Owntracks HTTP payloads recoding into database
 * Interface to map location records
-* Responsive : accessible on mobile and tablet !
+* Responsive : accessible on mobile and tablet!
 * Calendar to select location records period
 
-## Installation
+
+Installation
+------------
+
 ### Requirements
-- PHP 5 and above
-- MySQL or equivalent (MariaDB,...)
+- PHP 5.6 or above
+- MySQL or equivalent (MariaDB, …) **or** PHP's SQLite3 PDO driver
 - self hosted / dedicated server / mutualized hosting
 
 That's it !
@@ -51,8 +61,11 @@ Follow [Owntracks Booklet](http://owntracks.org/booklet/features/settings/) to s
 1. Setup your Owntracks app :
   1. Mode : HTTP
   2. URL : http://your_host/your_dir/record.php
-  
-## Usage
+
+
+Usage
+-----
+
 ### First time access
 Access map of today's recorded locations at : http://your_host/your_dir/
 
@@ -65,19 +78,16 @@ Access map of today's recorded locations at : http://your_host/your_dir/
   * Display or hide the individual markers (first and last markers for the period will always be displayed)
   * Change maximum accuracy for displayed location records
 
-## Contributing
+
+Contributing
+------------
+
 So far my team is small - just 1 person, but I'm willing to work with you!
 
 I'd really like for you to bring a few more people along to join in.
 
-## Credits
-* [jQuery](https://jquery.com/) : the fast, small, and feature-rich JavaScript library
-* [Bootstrap](http://getbootstrap.com/) : the sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development
-* [Bootstrap-Datepicker](https://eonasdan.github.io/bootstrap-datetimepicker/) : 
-* [MomentJS](https://momentjs.com/) : Full featured date library for parsing, validating, manipulating, and formatting dates
-* [LeafletJS](http://leafletjs.com/) : an open-source JavaScript library for mobile-friendly interactive maps
-* [Leaflet Hotline](https://iosphere.github.io/Leaflet.hotline/) : A Leaflet plugin for drawing colored gradients along polylines.
-* [js-cookie](https://github.com/js-cookie/js-cookie) : A simple, lightweight JavaScript API for handling browser cookies
 
-## License
+License
+-------
+
 This project is published under the [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/)
