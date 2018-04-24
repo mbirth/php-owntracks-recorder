@@ -18,9 +18,7 @@ _log('Payload = ' . $payload);
 $data = @json_decode($payload, true);
 
 $response_msg = null;
-
-if ($data['_type'] == 'location') {
-
+if ($data['_type'] == 'location' || $_REQUEST['debug']) {
     if ($_config['sql_type'] == 'mysql') {
         require_once('lib/db/MySql.php');
         $sql = new MySql($_config['sql_db'], $_config['sql_host'], $_config['sql_user'], $_config['sql_pass'], $_config['sql_prefix']);
@@ -51,7 +49,6 @@ if ($data['_type'] == 'location') {
     if (array_key_exists('vel', $data)) $velocity = intval($data['vel']);
     if (array_key_exists('p', $data)) $pressure = floatval($data['p']);
     if (array_key_exists('conn', $data)) $connection = strval($data['conn']);
-    
     
     //record only if same data found at same epoch / tracker_id
     if (!$sql->isEpochExisting($tracker_id, $epoch)) {
@@ -96,6 +93,29 @@ if ($data['_type'] == 'location') {
 
 $response = array();
 
+// Build list of buddies' last locations
+$buddies = $sql->getAllLatestMarkers();
+foreach ($buddies as $buddy) {
+    $loc = array(
+        '_type' => 'location',
+        'acc' => $buddy['accuracy'],
+        'alt' => $buddy['altitude'],
+        'batt' => $buddy['battery_level'],
+        'cog' => $buddy['heading'],
+        'lat' => $buddy['latitude'],
+        'lon' => $buddy['longitude'],
+        'rad' => $buddy['radius'],
+        't' => $buddy['trig'],
+        'tid' => strval($buddy['tracker_id']),
+        'tst' => $buddy['epoch'],
+        'vac' => $buddy['vertical_accuracy'],
+        'vel' => $buddy['velocity'],
+        'p' => $buddy['pressure'],
+        'conn' => $buddy['connection'],
+    );
+    $response[] = $loc;
+}
+
 if (!is_null($response_msg)) {
     // Add status message to return object (to be shown in app)
     $response[] = array(
@@ -106,5 +126,3 @@ if (!is_null($response_msg)) {
 }
 
 print json_encode($response);
-
-fclose($fp);

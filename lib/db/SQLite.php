@@ -10,7 +10,7 @@ class SQLite extends AbstractDb
         $this->prefix = '';
     }
 
-    protected function query(string $sql, array $params): array
+    protected function query(string $sql, array $params = array()): array
     {
         $stmt = $this->db->prepare($sql);
         if (!$stmt) {
@@ -28,7 +28,7 @@ class SQLite extends AbstractDb
         return $result;
     }
 
-    protected function execute(string $sql, array $params): bool
+    protected function execute(string $sql, array $params = array()): bool
     {
         $stmt = $this->db->prepare($sql);
         if (!$stmt) {

@@ -5,12 +5,12 @@ class AbstractDb
     protected $db;
     protected $prefix;
 
-    protected function execute(string $sql, array $params): bool
+    protected function execute(string $sql, array $params = array()): bool
     {
         // Run query without result
     }
 
-    protected function query(string $sql, array $params): array
+    protected function query(string $sql, array $params = array()): array
     {
         // Run query and fetch results
     }
@@ -80,6 +80,13 @@ class AbstractDb
         $sql = 'UPDATE ' . $this->prefix . 'locations SET display_name = ?, place_id = ?, osm_id = ? WHERE epoch = ?';
         $params = array($location_name, $place_id, $osm_id, $epoch);
         $result = $this->execute($sql, $params);
+        return $result;
+    }
+
+    public function getAllLatestMarkers()
+    {
+        $sql = 'SELECT * from locations l1 INNER JOIN (SELECT tracker_id, MAX(epoch) AS epoch FROM locations GROUP BY tracker_id) l2 ON l1.tracker_id=l2.tracker_id AND l1.epoch=l2.epoch';
+        $result = $this->query($sql);
         return $result;
     }
 }

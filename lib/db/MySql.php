@@ -38,7 +38,7 @@ class MySql extends AbstractDb
         return $stmt;
     }
 
-    protected function query(string $sql, array $params): array
+    protected function query(string $sql, array $params = array()): array
     {
         $stmt = $this->prepareStmt($sql, $params);
         if (!$stmt) {
@@ -59,7 +59,7 @@ class MySql extends AbstractDb
         return $result;
     }
 
-    protected function execute(string $sql, array $params): bool
+    protected function execute(string $sql, array $params = array()): bool
     {
         $stmt = $this->prepareStmt($sql, $params);
         if (!$stmt) {
