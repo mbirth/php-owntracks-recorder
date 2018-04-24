@@ -3,10 +3,10 @@ A simple and responsive self-hosted solution to record and map [Owntracks](https
 
 ## Screenshots
 ### Location records mapping
-![Desktop view](https://cloud.githubusercontent.com/assets/2725792/23558947/d27e3c2c-0035-11e7-87fa-bb8c929a8e2c.png)
+![Desktop view](docs/screenshot1.png?raw=true)
 
 ### Responsible interface & controls
-![Responsive view](https://cloud.githubusercontent.com/assets/2725792/23558838/5be76e94-0035-11e7-9d39-84f4e9760fb3.png)
+![Responsive view](docs/screenshot2.png?raw=true)
 
 ## Features
 * Owntracks HTTP payloads recoding into database
