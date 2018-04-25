@@ -1,0 +1,13 @@
+body {
+  width: 100%;
+}
+
+#mapid {
+  height: 85vh;
+}
+
+.disabled {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.5;
+}
