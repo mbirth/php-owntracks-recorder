@@ -29,10 +29,24 @@ if ($data['_type'] == 'location' || $_REQUEST['debug']) {
         die('Invalid database type: ' . $_config['sql_type']);
     }
 
-    # CREATE TABLE locations (dt TIMESTAMP, tid CHAR(2), lat DECIMAL(9,6), lon DECIMAL(9,6));
-    
+    $accuracy = null;
+    $altitude = null;
+    $battery_level = null;
+    $heading = null;
+    $description = null;
+    $event = null;
+    $latitude = null;
+    $longitude = null;
+    $radius = null;
+    $trig = null;
+    $tracker_id = null;
+    $epoch = null;
+    $vertical_accuracy = null;
+    $velocity = null;
+    $pressure = null;
+    $connection = null;
+
     //http://owntracks.org/booklet/tech/json/
-    //iiiissddissiiidsiis
     if (array_key_exists('acc', $data)) $accuracy = intval($data['acc']);
     if (array_key_exists('alt', $data)) $altitude = intval($data['alt']);
     if (array_key_exists('batt', $data)) $battery_level = intval($data['batt']);
@@ -69,9 +83,7 @@ if ($data['_type'] == 'location' || $_REQUEST['debug']) {
             $vertical_accuracy,
             $velocity,
             $pressure,
-            $connection,
-            $place_id,
-            $osm_id
+            $connection
         );
             
         if ($result) {
