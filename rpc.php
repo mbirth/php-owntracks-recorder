@@ -4,16 +4,18 @@
 # and insert into database table.
 
 header("Content-type: application/javascript");
-require_once('config.inc.php');
+require_once 'config.inc.php';
+require_once 'vendor/autoload.php';
+
+use \OwntracksRecorder\Database\MySql;
+use \OwntracksRecorder\Database\SQLite;
 
 $response = array();
 
 if ($_config['sql_type'] == 'mysql') {
-    require_once('lib/db/MySql.php');
     /** @var MySql $sql */
     $sql = new MySql($_config['sql_db'], $_config['sql_host'], $_config['sql_user'], $_config['sql_pass'], $_config['sql_prefix']);
 } elseif ($_config['sql_type'] == 'sqlite') {
-    require_once('lib/db/SQLite.php');
     /** @var SQLite $sql */
     $sql = new SQLite($_config['sql_db']);
 } else {

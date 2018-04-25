@@ -1,8 +1,10 @@
 <?php
 
-require_once(__DIR__ . '/AbstractDb.php');
+namespace OwntracksRecorder\Database;
 
-class SQLite extends AbstractDb
+use \OwntracksRecorder\Database\AbstractDatabase;
+
+class SQLite extends AbstractDatabase
 {
     public function __construct($db, $hostname = null, $username = null, $password = null, $prefix = '')
     {

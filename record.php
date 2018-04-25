@@ -1,29 +1,30 @@
 <?php
 
+//http://owntracks.org/booklet/tech/http/
+
+require_once 'config.inc.php';
+require_once 'vendor/autoload.php';
+
+use \OwntracksRecorder\Database\MySql;
+use \OwntracksRecorder\Database\SQLite;
+
 function _log($msg)
 {
     $msg = date('Y-m-d H:i:s') . ' - ' . $_SERVER['REMOTE_ADDR'] . ' - ' . $msg . PHP_EOL;
     file_put_contents('./log/record_log.txt', $msg, FILE_APPEND);
 }
 
-//http://owntracks.org/booklet/tech/http/
-# Obtain the JSON payload from an OwnTracks app POSTed via HTTP
-# and insert into database table.
-
-header('Content-type: application/json');
-require_once('./config.inc.php');
-
 $payload = file_get_contents('php://input');
 _log('Payload = ' . $payload);
 $data = @json_decode($payload, true);
 
+header('Content-type: application/json');
+
 $response_msg = null;
 if ($data['_type'] == 'location' || $_REQUEST['debug']) {
     if ($_config['sql_type'] == 'mysql') {
-        require_once('lib/db/MySql.php');
         $sql = new MySql($_config['sql_db'], $_config['sql_host'], $_config['sql_user'], $_config['sql_pass'], $_config['sql_prefix']);
     } elseif ($_config['sql_type'] == 'sqlite') {
-        require_once('lib/db/SQLite.php');
         $sql = new SQLite($_config['sql_db']);
     } else {
         die('Invalid database type: ' . $_config['sql_type']);

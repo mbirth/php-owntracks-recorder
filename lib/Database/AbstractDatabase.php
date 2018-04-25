@@ -1,6 +1,8 @@
 <?php
 
-class AbstractDb
+namespace OwntracksRecorder\Database;
+
+class AbstractDatabase
 {
     protected $db;
     protected $prefix;

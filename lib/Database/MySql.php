@@ -1,8 +1,10 @@
 <?php
 
-require_once(__DIR__ . '/AbstractDb.php');
+namespace OwntracksRecorder\Database;
 
-class MySql extends AbstractDb
+use \OwntracksRecorder\Database\AbstractDatabase;
+
+class MySql extends AbstractDatabase
 {
     public function __construct(string $db, string $hostname = null, string $username = null, string $password = null, string $prefix = '')
     {
