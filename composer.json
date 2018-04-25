@@ -14,10 +14,11 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "bower install"
+            "bower install",
+            "@coffee"
         ],
         "coffee": [
-            "bower_components/coffeescript/bin/coffee -c assets/*.coffee"
+            "bower_components/coffeescript/bin/coffee -m -c assets/*.coffee"
         ]
     }
 }
