@@ -95,9 +95,12 @@
   </div>
   <script type="text/javascript">
     $(document).ready(function() {
-        var default_trackerID = '{{default_tracker_id}}';
+        window.default_trackerID = '{{default_tracker_id}}';
+        window.trackerID = '{{tracker_id}}';
+        window.accuracy = {{accuracy}};
+        window.datepicker_language = '{{datepicker_language}}';
 
-        initUI({{accuracy}}, '{{tracker_id}}', '{{datepicker_language}}');
+        initUI();
         initMap();
     });
   </script>

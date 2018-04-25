@@ -1,18 +1,5 @@
-//datetimepicker setup
-var dateFrom;
-var dateTo;
-var accuracy;
-var datePrevFrom;
-var datePrevTo;
-var dateNextFrom;
-var dateNextTo;
-var trackerID;
-var trackerIDs = [];
-
-var i;
 var map_drawn = false;
 var show_markers;
-var mymap;
 var tid_markers; // markers collected from json
 var my_marker;
 var my_markers = [];
@@ -30,19 +17,17 @@ var marker_icons = [];
 function updateDateNav(_dateFrom, _dateTo){
     console.log("updateDateNav : INIT");
     
+    if(typeof _dateFrom == "undefined") { _dateFrom = window.dateFrom; }
+    if(typeof _dateTo == "undefined") { _dateTo = window.dateTo; }
 
-    if(typeof _dateFrom == "undefined") { _dateFrom = dateFrom; }
-    if(typeof _dateTo == "undefined") { _dateTo = dateTo; }
-
-
-    diff = _dateTo.diff(_dateFrom, 'days');
+    var diff = _dateTo.diff(_dateFrom, 'days');
     //if(dateTo.isSame(dateFrom)){ diff = diff+1; }
     
-    datePrevTo = moment(_dateFrom).subtract(1, 'days');;
-    datePrevFrom = moment(datePrevTo).subtract(diff, 'days');
+    var datePrevTo = moment(_dateFrom).subtract(1, 'days');;
+    var datePrevFrom = moment(datePrevTo).subtract(diff, 'days');
     
-    dateNextFrom = moment(_dateTo).add(1, 'days');
-    dateNextTo = moment(dateNextFrom).add(diff, 'days');
+    var dateNextFrom = moment(_dateTo).add(1, 'days');
+    var dateNextTo = moment(dateNextFrom).add(diff, 'days');
     
     //disable Next button
     if(dateNextFrom.isAfter(moment())){
@@ -63,102 +48,101 @@ function updateDateNav(_dateFrom, _dateTo){
 
 function gotoDate(_dateFrom, _dateTo, pushState){
     console.log("gotoDate : INIT");
-    
+
     var _dateFrom = (typeof _dateFrom !== 'undefined') ? moment(_dateFrom) : moment();
     var _dateTo = (typeof _dateTo !== 'undefined') ? moment(_dateTo) : moment();
     var pushState = (typeof pushState !== 'undefined') ? pushState : true;
+
+    window.dateFrom = _dateFrom;
+    window.dateTo = _dateTo;
     
-    dateFrom = _dateFrom;
-    dateTo = _dateTo;
-    
-    $('#dateFrom').val(moment(dateFrom).format('YYYY-MM-DD'));
-    $('#dateTo').val(moment(dateTo).format('YYYY-MM-DD'));
-    
-    
+    $('#dateFrom').val(moment(window.dateFrom).format('YYYY-MM-DD'));
+    $('#dateTo').val(moment(window.dateTo).format('YYYY-MM-DD'));
+
     //push selected dates in window.history stack
-    if(pushState) { window.history.pushState(
-                            {dateFrom: moment(dateFrom).format('YYYY-MM-DD'), dateTo: moment(dateTo).format('YYYY-MM-DD')},
-                            '', 
-                            window.location.pathname + '?dateFrom=' + moment(dateFrom).format('YYYY-MM-DD') + '&dateTo=' + moment(dateTo).format('YYYY-MM-DD')
-                            ); 
-                    }
-
+    if (pushState) {
+        var data = {
+            dateFrom: moment(window.dateFrom).format('YYYY-MM-DD'),
+            dateTo: moment(window.dateTo).format('YYYY-MM-DD')
+        };
+        var url = window.location.pathname + '?dateFrom=' + data.dateFrom + '&dateTo=' + data.dateTo;
+        console.log('Pushing state: %o with data: %o', url, data);
+        window.history.pushState(data, '', url); 
+    }
     updateDateNav();
-
     mapMarkers();
     return false;
 }
 
-function gotoAccuracy(){
+function gotoAccuracy()
+{
     console.log("gotoAccuracy : INIT");
     
     var _accuracy = parseInt($('#accuracy').val());
-    
-    if(_accuracy != accuracy){
+
+    if (_accuracy != window.accuracy) {
         
         Cookies.set('accuracy', _accuracy);
         console.log("Accuracy cookie = " + Cookies.get('accuracy'));
         
         //location.href='./?dateFrom='+moment(dateFrom).format('YYYY-MM-DD') + '&dateTo=' + moment(dateTo).format('YYYY-MM-DD') + '&accuracy=' + _accuracy + '&trackerID=' + trackerID;
-
-        accuracy = _accuracy;
-
+        window.accuracy = _accuracy;
         mapMarkers();
-
-    }else{
+    } else {
         $('#configCollapse').collapse('hide');
     }
     return false;
 }
 
-function changeTrackerID(){
+function changeTrackerID()
+{
     console.log("changeTrackerID : INIT");
     
     var _trackerID = $('#trackerID_selector').val();
     
-    if(_trackerID != trackerID){
-        
+    if (_trackerID != window.trackerID) {
         Cookies.set('trackerID', _trackerID);
         console.log("changeTrackerID : INFO trackerID cookie = " + Cookies.get('trackerID'));
         
-        trackerID = _trackerID;
+        window.trackerID = _trackerID;
         drawMap();
-
-    }else{
+    } else {
         $('#configCollapse').collapse('hide');
     }
     return false;
 }
 
-function handlePopState(event){
+function handlePopState(event)
+{
     console.log("handlePopState : INIT");
     console.log(event);
-    
-    return gotoDate(event.state.dateFrom, event.state.dateTo, false);
+    if (event.state) {
+        return gotoDate(event.state.dateFrom, event.state.dateTo, false);
+    }
 }
 
-function initUI(accuracy, trackerID, language) {
+function initUI() {
     console.log("initUI : INIT");
 
     var _GET = new URLSearchParams(window.location.search);
 
-    dateFrom = moment();
-    dateTo = moment();
+    window.dateFrom = moment();
+    window.dateTo = moment();
     if (_GET.has('dateFrom')) {
-        dateFrom = moment(_GET.get('dateFrom'));
+        window.dateFrom = moment(_GET.get('dateFrom'));
     }
     if (_GET.has('dateTo')) {
-        dateTo = moment(_GET.get('dateTo'));
+        window.dateTo = moment(_GET.get('dateTo'));
     }
-    $('#dateFrom').val(dateFrom.format('YYYY-MM-DD'));
-    $('#dateTo').val(dateTo.format('YYYY-MM-DD'));
+    $('#dateFrom').val(window.dateFrom.format('YYYY-MM-DD'));
+    $('#dateTo').val(window.dateTo.format('YYYY-MM-DD'));
 
     //date params event handlers
     updateDateNav();
 
     $('.input-daterange').datepicker({
         format: 'yyyy-mm-dd',
-        language: language,
+        language: window.datepicker_language,
         endDate: '0d',
     });
 
@@ -193,6 +177,8 @@ function initMap()
 {
     console.log("initMap : INIT");
 
+    window.trackerIDs = [];
+
     show_markers = Cookies.get('show_markers');
     console.log("initMap : INFO show_markers = " + show_markers);
 
@@ -213,12 +199,12 @@ function initMap()
         $('#show_markers').removeClass( "btn-default" ).addClass( "btn-primary" ).addClass( "active" );
     }
 
-    mymap = L.map('mapid').setView([52.52, 13.44], 11);
+    window.mymap = L.map('mapid').setView([52.52, 13.44], 11);
 
     L.tileLayer( 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         subdomains: ['a','b','c']
-    }).addTo( mymap );
+    }).addTo(window.mymap);
     mapMarkers();
 }
 
@@ -226,8 +212,8 @@ function setDefaultZoom()
 {
     console.log("setDefaultZoom : INIT");
     setTimeout(function() {
-        default_zoom = mymap.getZoom();
-        default_center = mymap.getCenter();
+        default_zoom = window.mymap.getZoom();
+        default_center = window.mymap.getCenter();
     }, 2000);
 }
 
@@ -240,17 +226,19 @@ function mapMarkers()
 function getMarkers()
 {
     console.log("getMarkers : INIT");
+    var params = {
+        'action': 'getMarkers',
+        'dateFrom': window.dateFrom.format('YYYY-MM-DD'),
+        'dateTo': window.dateTo.format('YYYY-MM-DD'),
+        'accuracy': window.accuracy
+        //'trackerID' : trackerID,
+        //'epoc': time(),
+    };
+    console.log('Params: %o', params);
     //ajax call to get list of markers
     $.ajax({
         url: 'rpc.php',
-        data: {
-            'dateFrom': dateFrom.format('YYYY-MM-DD'),
-            'dateTo': dateTo.format('YYYY-MM-DD'),
-            'accuracy': accuracy,
-            //'trackerID' : trackerID,
-            //'epoc': time(),
-            'action': 'getMarkers'
-        },
+        data: params,
         type: 'GET',
         dataType: 'json',
         beforeSend: function(xhr)
@@ -259,6 +247,7 @@ function getMarkers()
         },
         success: function(data, status)
         {
+            console.log('Answer: %o', data);
             if (data.status) {
                 jsonMarkers = data.markers;
                 updateTrackerIDs(jsonMarkers);
@@ -284,21 +273,21 @@ function updateTrackerIDs(_tid_markers)
             $(this).remove();
         });
         if (typeof _tid_markers != "undefined" && _tid_markers != null) {
-            trackerIDs = Object.keys(_tid_markers); 
-            $.each(trackerIDs, function( index, value ) {
+            window.trackerIDs = Object.keys(_tid_markers); 
+            $.each(window.trackerIDs, function( index, value ) {
                 $('#trackerID_selector').append($('<option>', {
                     value: value,
                     text: value
                 }));
             });
-            $("#trackerID_selector").val(trackerID);
+            $("#trackerID_selector").val(window.trackerID);
         } else {
             console.log("updateTrackerIDs : INFO no trackerID found in markers json");
             return ;
         }
     } catch(err) {
         console.log("updateTrackerIDs : ERROR " + err.message);
-        alert( err.message );
+        alert(err.message);
     }
 }
 
@@ -308,7 +297,7 @@ function updateTrackerIDs(_tid_markers)
 */
 function drawMap(_tid_markers)
 {
-    console.log("drawMap : INIT");
+    console.log("drawMap : INIT - %o", _tid_markers);
     try {
         if (typeof _tid_markers == "undefined" && typeof tid_markers != "undefined" && tid_markers != null) {
             _tid_markers = tid_markers;
@@ -348,7 +337,7 @@ function drawMap(_tid_markers)
                 my_latlngs[tid] = [];
                 my_markers[tid] = [];
 
-                if (trackerID == window.default_trackerID || trackerID == tid) {
+                if (window.trackerID == window.default_trackerID || window.trackerID == tid) {
                     var trackerIDString = '<br/>TrackerID : ' + tid;
                     if (markers.length > 0) {
                         for ( i=0; i < markers.length; ++i ) {
@@ -396,7 +385,7 @@ function drawMap(_tid_markers)
                             
                             //add marker to map only if cookie 'show_markers' says to or if 1st or last marker
                             if (show_markers != '0' || i == 0 || i == markers.length-1) {
-                                my_marker.addTo( mymap );
+                                my_marker.addTo(window.mymap);
                             }
                             /*
                             //default show popup for last marker of track
@@ -437,10 +426,10 @@ function drawMap(_tid_markers)
                             weight: 4,
                             outlineColor: '#000000',
                             outlineWidth: 0.5
-                        }).addTo(mymap);
+                        }).addTo(window.mymap);
                     } else {
-                        console.log("drawMap : ERROR No location data for trackerID '" + trackerID + "' found !");
-                        alert('No location data for trackerID \'' + trackerID + '\' found !');
+                        console.log("drawMap : ERROR No location data for trackerID '" + window.trackerID + "' found !");
+                        alert('No location data for trackerID \'' + window.trackerID + '\' found !');
                     }
                 }
             }
@@ -451,7 +440,7 @@ function drawMap(_tid_markers)
         //save default zoom scale
         setDefaultZoom();
         //auto zoom scale based on all markers location
-        mymap.fitBounds([
+        window.mymap.fitBounds([
             [min_lat, min_lon],
             [max_lat, max_lon]
         ]);
@@ -470,7 +459,7 @@ function eraseMap()
 {
     console.log("eraseMap : INIT");
     $.each(trackerIDs, function(_index, _tid) {
-        if (_tid in polylines) { polylines[_tid].removeFrom(mymap); }
+        if (_tid in polylines) { polylines[_tid].removeFrom(window.mymap); }
     });
     $.each(trackerIDs, function(_index, _tid) {
         $.each(my_markers[_tid], function(_index2, _marker){
@@ -499,11 +488,11 @@ function showMarkers()
 {
     console.log("showMarkers : INIT");
     $.each(trackerIDs, function(_index, _tid){
-        if (trackerID == _tid || trackerID == window.default_trackerID) {
+        if (window.trackerID == _tid || window.trackerID == window.default_trackerID) {
             $.each(my_markers[_tid], function(_index2, _marker){
                 //add marker to map except first & last (never removed)
                 if(_index2 != 0 || _index2 !=my_markers[_tid].length){
-                    _marker.addTo( mymap );
+                    _marker.addTo(window.mymap);
                 }
             });
         }
@@ -515,7 +504,7 @@ function hideMarkers()
 {
     console.log("hideMarkers : INIT");
     $.each(trackerIDs, function(_index, _tid){
-        if (trackerID == _tid || trackerID == window.default_trackerID) {
+        if (window.trackerID == _tid || window.trackerID == window.default_trackerID) {
             $.each(my_markers[_tid], function(_index2, _marker){
                 //remove marker except first & last
                 if (_index2 > 0 && _index2 < my_markers[_tid].length-1) {
@@ -631,6 +620,6 @@ function showBoundingBox(i)
 function resetZoom()
 {
     console.log("resetZoom : INIT");
-    mymap.setView(default_center, default_zoom);
+    window.mymap.setView(default_center, default_zoom);
     return false;
 }
