@@ -137,11 +137,21 @@ function handlePopState(event){
     return gotoDate(event.state.dateFrom, event.state.dateTo, false);
 }
 
-function initUI(dateFromStr, dateToStr, accuracy, trackerID, language) {
+function initUI(accuracy, trackerID, language) {
     console.log("initUI : INIT");
 
-    dateFrom = moment(dateFromStr);
-    dateTo = moment(dateToStr);
+    var _GET = new URLSearchParams(window.location.search);
+
+    dateFrom = moment();
+    dateTo = moment();
+    if (_GET.has('dateFrom')) {
+        dateFrom = moment(_GET.get('dateFrom'));
+    }
+    if (_GET.has('dateTo')) {
+        dateTo = moment(_GET.get('dateTo'));
+    }
+    $('#dateFrom').val(dateFrom.format('YYYY-MM-DD'));
+    $('#dateTo').val(dateTo.format('YYYY-MM-DD'));
 
     //date params event handlers
     updateDateNav();
@@ -163,7 +173,6 @@ function initUI(dateFromStr, dateToStr, accuracy, trackerID, language) {
     $('#accuracySubmit').click(function(){
         gotoAccuracy();
     });
-
 
     $('#trackerID_selector').change(function(){
         changeTrackerID();
@@ -187,35 +196,15 @@ function initMap()
     show_markers = Cookies.get('show_markers');
     console.log("initMap : INFO show_markers = " + show_markers);
 
-    marker_start_icons[0] = L.AwesomeMarkers.icon({icon: 'play', markerColor: 'blue', iconColor: 'green' });
-    marker_start_icons[1] = L.AwesomeMarkers.icon({icon: 'play', markerColor: 'red', iconColor: 'green' });
-    marker_start_icons[2] = L.AwesomeMarkers.icon({icon: 'play', markerColor: 'orange', iconColor: 'green' });
-    marker_start_icons[3] = L.AwesomeMarkers.icon({icon: 'play', markerColor: 'green', iconColor: 'darkgreen' });
-    marker_start_icons[4] = L.AwesomeMarkers.icon({icon: 'play', markerColor: 'purple', iconColor: 'green' });
-    marker_start_icons[5] = L.AwesomeMarkers.icon({icon: 'play', markerColor: 'cadetblue', iconColor: 'green' });
-    marker_start_icons[6] = L.AwesomeMarkers.icon({icon: 'play', markerColor: 'darkred', iconColor: 'green' });
-    marker_start_icons[7] = L.AwesomeMarkers.icon({icon: 'play', markerColor: 'darkgreen', iconColor: 'green' });
-    marker_start_icons[8] = L.AwesomeMarkers.icon({icon: 'play', markerColor: 'darkpuple', iconColor: 'green' });
-
-    marker_finish_icons[0] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: 'blue', iconColor: 'red' });
-    marker_finish_icons[1] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: 'red', iconColor: 'darkred' });
-    marker_finish_icons[2] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: 'orange', iconColor: 'red' });
-    marker_finish_icons[3] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: 'green', iconColor: 'red' });
-    marker_finish_icons[4] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: 'purple', iconColor: 'red' });
-    marker_finish_icons[5] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: 'cadetblue', iconColor: 'red' });
-    marker_finish_icons[6] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: 'darkred', iconColor: 'red' });
-    marker_finish_icons[7] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: 'darkgreen', iconColor: 'red' });
-    marker_finish_icons[8] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: 'darkpuple', iconColor: 'red' });
-
-    marker_icons[0] = L.AwesomeMarkers.icon({icon: 'user', markerColor: 'blue' });
-    marker_icons[1] = L.AwesomeMarkers.icon({icon: 'user', markerColor: 'red' });
-    marker_icons[2] = L.AwesomeMarkers.icon({icon: 'user', markerColor: 'orange' });
-    marker_icons[3] = L.AwesomeMarkers.icon({icon: 'user', markerColor: 'green' });
-    marker_icons[4] = L.AwesomeMarkers.icon({icon: 'user', markerColor: 'purple' });
-    marker_icons[5] = L.AwesomeMarkers.icon({icon: 'user', markerColor: 'cadetblue' });
-    marker_icons[6] = L.AwesomeMarkers.icon({icon: 'user', markerColor: 'darkred' });
-    marker_icons[7] = L.AwesomeMarkers.icon({icon: 'user', markerColor: 'darkgreen' });
-    marker_icons[8] = L.AwesomeMarkers.icon({icon: 'user', markerColor: 'darkpuple' });
+    var colours = ['blue', 'red', 'orange', 'green', 'purple', 'cadetblue', 'darkred', 'darkgreen', 'darkpurple'];
+    for (var i=0; i<=colours.length; i++) {
+        var fg = colours[i];
+        var bg1 = (fg=='green')?'darkgreen':'green';
+        var bg2 = (fg=='red')?'darkgred':'red';
+        marker_start_icons[i] = L.AwesomeMarkers.icon({icon: 'play', markerColor: fg, iconColor: bg1 });
+        marker_finish_icons[i] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: fg, iconColor: bg2 });
+        marker_icons[i] = L.AwesomeMarkers.icon({icon: 'user', markerColor: fg });
+    }
 
     //set checkbox
     if (show_markers == '1') {
@@ -252,7 +241,7 @@ function getMarkers()
 {
     console.log("getMarkers : INIT");
     //ajax call to get list of markers
-    $.ajax({ 
+    $.ajax({
         url: 'rpc.php',
         data: {
             'dateFrom': dateFrom.format('YYYY-MM-DD'),
@@ -266,14 +255,14 @@ function getMarkers()
         dataType: 'json',
         beforeSend: function(xhr)
         {
-            $('#mapid').css('filter','blur(5px)');
+            $('#mapid').css('filter', 'blur(5px)');
         },
         success: function(data, status)
         {
             if (data.status) {
-                jsonMarkers = JSON.parse(data.markers);
+                jsonMarkers = data.markers;
                 updateTrackerIDs(jsonMarkers);
-                if (drawMap(jsonMarkers)) { $('#mapid').css('filter','blur(0px)'); }
+                if (drawMap(jsonMarkers)) { $('#mapid').css('filter', 'blur(0px)'); }
             } else {
                 console.log("getMarkers : ERROR Status : " + status);
                 console.log("getMarkers : ERROR Data : ");

@@ -23,9 +23,9 @@
       </div>
       <div class="col-xs-5 text-center">
         <div class="input-group input-daterange">
-          <input type="text" class="form-control" value="{{date_from}}" id="dateFrom"/>
+          <input type="text" class="form-control" value="" id="dateFrom"/>
           <span class="input-group-addon">to</span>
-          <input type="text" class="form-control" value="{{date_to}}" id="dateTo"/>
+          <input type="text" class="form-control" value="" id="dateTo"/>
         </div>
       </div>
       <div class="col-xs-6 text-right">
@@ -97,7 +97,7 @@
     $(document).ready(function() {
         var default_trackerID = '{{default_tracker_id}}';
 
-        initUI('{{date_from}}', '{{date_to}}', {{accuracy}}, '{{tracker_id}}', '{{datepicker_language}}');
+        initUI({{accuracy}}, '{{tracker_id}}', '{{datepicker_language}}');
         initMap();
     });
   </script>

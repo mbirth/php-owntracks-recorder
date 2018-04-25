@@ -3,9 +3,6 @@
 require_once 'config.inc.php';
 require_once 'vendor/autoload.php';
 
-$dateFrom = isset($_GET['dateFrom']) ? $_GET['dateFrom'] : date('Y-m-d');
-$dateTo = isset($_GET['dateTo']) ? $_GET['dateTo'] : date('Y-m-d');
-
 if (isset($_GET['accuracy']) && $_GET['accuracy'] != '' && intval($_GET['accuracy']) > 0) {
     $accuracy = intval($_GET['accuracy']);
 } elseif (isset($_COOKIE['accuracy']) && $_COOKIE['accuracy'] != '' && intval($_COOKIE['accuracy']) > 0) {
@@ -31,8 +28,6 @@ $mustache = new \Mustache_Engine(array(
 
 $vars = array(
     'default_tracker_id' => $_config['default_trackerID'],
-    'date_from' => $dateFrom,
-    'date_to' => $dateTo,
     'accuracy' => $accuracy,
     'tracker_id' => $trackerID,
     'datepicker_language' => $_config['datepicker-language'],
