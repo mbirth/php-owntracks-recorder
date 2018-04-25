@@ -50,9 +50,13 @@ That's it !
 	$_config['geo_reverse_lookup_url'] // geodecoding api url, will be appended with lat= & lon= attributes 
 ```
 3. Create datatable using schema_mysql.sql or schema_sqlite.sql (in the 'sql' directory)
-4. Install dependencies using [bower](https://bower.io/):
+4. Get [bower](https://bower.io/) and install JavaScript dependencies:
 ```
 bower install
+```
+5. Get [Composer](https://getcomposer.org/download/) and install PHP dependencies:
+```
+./composer.phar install
 ```
 
 #### Owntracks app
