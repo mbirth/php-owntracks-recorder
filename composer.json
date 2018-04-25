@@ -9,5 +9,13 @@
     },
     "autoload": {
         "classmap": ["lib/"]
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "bower install"
+        ],
+        "coffee": [
+            "bower_components/coffeescript/bin/coffee -c assets/*.coffee"
+        ]
     }
 }

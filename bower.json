@@ -3,13 +3,16 @@
   "description": "A simple and responsive self-hosted solution to record and map Owntracks http payloads.",
   "main": "index.php",
   "authors": [
-    "tomyvi <tomyvi@protonmail.com>"
+    "tomyvi <tomyvi@protonmail.com>",
+    "Markus Birth <markus@birth-online.de>"
   ],
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "keywords": [
-    "owntracks"
+    "owntracks",
+    "latitude",
+    "geolocation"
   ],
-  "homepage": "https://github.com/tomyvi/php-owntracks-recorder",
+  "homepage": "https://github.com/mbirth/php-owntracks-recorder",
   "private": true,
   "dependencies": {
     "jQuery": "^3.1.1",

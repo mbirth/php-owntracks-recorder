@@ -50,11 +50,17 @@ That's it !
 	$_config['geo_reverse_lookup_url'] // geodecoding api url, will be appended with lat= & lon= attributes 
 ```
 3. Create datatable using schema_mysql.sql or schema_sqlite.sql (in the 'sql' directory)
-4. Get [bower](https://bower.io/) and install JavaScript dependencies:
+4. Make sure you have installed [bower](https://bower.io/) (via [npm](https://nodejs.org/)):
 ```
-bower install
+sudo -H npm install -g bower
 ```
-5. Get [Composer](https://getcomposer.org/download/) and install PHP dependencies:
+
+   If you don't have access to the root user, you can install it locally:
+```
+npm install -g --prefix=$HOME bower
+export PATH=$HOME/bin:$PATH
+```
+5. Get [Composer](https://getcomposer.org/download/) and install dependencies (this will call `bower` automatically):
 ```
 ./composer.phar install
 ```
