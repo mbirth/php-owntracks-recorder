@@ -14,5 +14,5 @@ database.
 8. Modify the `import_google_history.php` and set your desired tracker id in line 5.
 9. Run:
    ```
-php import_google_history.php
-```
+   php import_google_history.php
+   ```
