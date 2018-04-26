@@ -19,4 +19,6 @@ CREATE TABLE `locations` (
   `place_id` int(11) DEFAULT NULL,
   `osm_id` int(11) DEFAULT NULL,
   `display_name` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+
+CREATE INDEX `idx_getmarkers` ON `locations` (`epoch` DESC, `accuracy`, `altitude`);

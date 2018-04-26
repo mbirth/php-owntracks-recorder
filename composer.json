@@ -3,7 +3,8 @@
     "description": "A simple and responsive self-hosted solution to record and map Owntracks http payloads.",
     "require": {
         "php": ">=5.6.0",
-        "mustache/mustache": "~2.12"
+        "mustache/mustache": "~2.12",
+        "pcrov/jsonreader": "*"
     },
     "require-dev": {
     },

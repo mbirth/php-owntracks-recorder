@@ -17,6 +17,16 @@ class AbstractDatabase
         // Run query and fetch results
     }
 
+    public function beginTransaction()
+    {
+        // Start transaction
+    }
+
+    public function commitTransaction()
+    {
+        // Commit transaction
+    }
+
     public function isEpochExisting(string $trackerId, int $epoch): bool
     {
         $sql = 'SELECT epoch FROM ' . $this->prefix . 'locations WHERE tracker_id = ? AND epoch = ?';

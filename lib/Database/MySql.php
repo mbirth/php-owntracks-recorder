@@ -73,4 +73,14 @@ class MySql extends AbstractDatabase
         }
         return $result;
     }
+
+    public function beginTransaction()
+    {
+        $this->db->begin_transaction();
+    }
+
+    public function commitTransaction()
+    {
+        $this->db->commit();
+    }
 }

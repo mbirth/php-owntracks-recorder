@@ -42,4 +42,14 @@ class SQLite extends AbstractDatabase
         }
         return $result;
     }
+
+    public function beginTransaction()
+    {
+        $this->db->beginTransaction();
+    }
+
+    public function commitTransaction()
+    {
+        $this->db->commit();
+    }
 }

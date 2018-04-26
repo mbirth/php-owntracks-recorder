@@ -8,12 +8,12 @@ CREATE TABLE "locations" (
   "heading" INTEGER,
   "description" TEXT,
   "event" TEXT,
-  "latitude" REAL,
-  "longitude" REAL,
+  "latitude" REAL NOT NULL,
+  "longitude" REAL NOT NULL,
   "radius" INTEGER,
   "trig" INTEGER,
-  "tracker_id" TEXT,
-  "epoch" INTEGER,
+  "tracker_id" TEXT NOT NULL,
+  "epoch" INTEGER NOT NULL,
   "vertical_accuracy" INTEGER,
   "velocity" INTEGER,
   "pressure" REAL,
@@ -21,4 +21,10 @@ CREATE TABLE "locations" (
   "place_id" INTEGER,
   "osm_id" INTEGER,
   "display_name" TEXT
+);
+
+CREATE INDEX "idx_getmarkers" ON "locations" (
+  "epoch" DESC,
+  "accuracy",
+  "altitude"
 );

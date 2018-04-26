@@ -1,5 +1,6 @@
 /assets/*.js.map
 /bower_components/
+/tools/Location History.json
 /vendor/
 config.inc.php
 owntracks.db3
