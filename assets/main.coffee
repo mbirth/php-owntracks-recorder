@@ -12,20 +12,20 @@ window.updateDateNav = (_dateFrom, _dateTo) ->
     diff = _dateTo.diff _dateFrom, 'days'
     # if(dateTo.isSame(dateFrom)){ diff = diff+1; }
     
-    datePrevTo = moment(_dateFrom).subtract 1, 'days'
-    datePrevFrom = moment(datePrevTo).subtract diff, 'days'
+    window.datePrevTo = moment(_dateFrom).subtract 1, 'days'
+    window.datePrevFrom = moment(datePrevTo).subtract diff, 'days'
     
-    dateNextFrom = moment(_dateTo).add 1, 'days'
-    dateNextTo = moment(dateNextFrom).add diff, 'days'
+    window.dateNextFrom = moment(_dateTo).add 1, 'days'
+    window.dateNextTo = moment(dateNextFrom).add diff, 'days'
     
     # disable Next button
-    if dateNextFrom.isAfter(moment())
+    if dateNextFrom.isAfter moment()
         $('#nextButton').addClass 'disabled'
     else
         $('#nextButton').removeClass 'disabled'
     
     # disable today button
-    if dateNextFrom.isSame(moment())
+    if _dateFrom.isSame moment(), 'day'
         $('#todayButton').addClass 'disabled'
         $('#livemap_on').removeClass 'disabled'
     else
@@ -55,7 +55,7 @@ window.gotoDate = (_dateFrom, _dateTo, pushState) ->
         window.history.pushState data, '', url
 
     updateDateNav()
-    mapMarkers()
+    window.mymap.getMarkers()
     return false
 
 window.gotoAccuracy = ->
@@ -69,7 +69,7 @@ window.gotoAccuracy = ->
         
         # location.href='./?dateFrom='+moment(dateFrom).format('YYYY-MM-DD') + '&dateTo=' + moment(dateTo).format('YYYY-MM-DD') + '&accuracy=' + _accuracy + '&trackerID=' + trackerID;
         window.accuracy = _accuracy
-        mapMarkers()
+        window.mymap.getMarkers()
     else
         $('#configCollapse').collapse 'hide'
     return false
@@ -123,3 +123,31 @@ window.initUI = ->
 
     # setup history popupstate event handler
     window.onpopstate = window.handlePopState
+
+window.showHideMarkers = ->
+    console.log 'showHideMarkers'
+    # $('#show_markers').change(function() {
+    if $('#show_markers').hasClass 'btn-default'
+        window.mymap.showMarkers()
+        Cookies.set 'show_markers', 1, { expires: 365 }
+        window.show_markers = 1
+        $('#show_markers').removeClass('btn-default').addClass('btn-primary').addClass('active')
+        return true
+    else
+        window.mymap.hideMarkers()
+        Cookies.set 'show_markers', 0, { expires: 365 }
+        window.show_markers = 0
+        $('#show_markers').removeClass('btn-primary').removeClass('active').addClass('btn-default')
+        return true
+
+window.resetZoom = ->
+    console.log 'resetZoom'
+    window.mymap.resetZoom()
+    return false
+
+window.setLiveMap = ->
+    console.log 'setLiveMap'
+    if window.mymap.toggleLiveView()
+        $('#livemap_on').removeClass('btn-default').addClass('btn-primary').addClass 'active'
+    else
+        $('#livemap_on').addClass('btn-default').removeClass('btn-primary').removeClass 'active'

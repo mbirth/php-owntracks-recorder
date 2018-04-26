@@ -27,7 +27,6 @@ $mustache = new \Mustache_Engine(array(
 ));
 
 $vars = array(
-    'default_tracker_id' => $_config['default_trackerID'],
     'accuracy' => $accuracy,
     'tracker_id' => $trackerID,
     'datepicker_language' => $_config['datepicker-language'],

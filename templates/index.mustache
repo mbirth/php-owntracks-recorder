@@ -9,6 +9,7 @@
 
   <!-- our scripts -->
   <script type="text/javascript" src="assets/main.js"></script>
+  <script type="text/javascript" src="assets/ownmap.js"></script>
   <script type="text/javascript" src="assets/index.js"></script>
   <link rel="stylesheet" href="assets/style.css"/>
   <title>Your Own Tracks</title>
@@ -102,7 +103,8 @@
         window.datepicker_language = '{{datepicker_language}}';
 
         initUI();
-        initMap();
+        //initMap();
+        window.mymap = new OwnMap();
     });
   </script>
 </body>
