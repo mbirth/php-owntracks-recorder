@@ -16,3 +16,9 @@ database.
    ```
    php import_google_history.php
    ```
+
+Notes
+-----
+
+* `LatitudeE7` and `LongitudeE7` have to be divided by 1e7 to get the float value
+* `velocity` is in metres per second (multiply by 3.6 to get km/h)
