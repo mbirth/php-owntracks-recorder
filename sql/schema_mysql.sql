@@ -22,3 +22,5 @@ CREATE TABLE `locations` (
 ) DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 CREATE INDEX `idx_getmarkers` ON `locations` (`epoch` DESC, `accuracy`, `altitude`);
+
+CREATE INDEX `idx_epochexisting` ON `locations` (`tracker_id`, `epoch` DESC);

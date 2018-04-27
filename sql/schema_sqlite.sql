@@ -28,3 +28,8 @@ CREATE INDEX "idx_getmarkers" ON "locations" (
   "accuracy",
   "altitude"
 );
+
+CREATE INDEX "idx_epochexisting" ON "locations" (
+  "tracker_id",
+  "epoch" DESC
+);
