@@ -22,3 +22,4 @@ Notes
 
 * `LatitudeE7` and `LongitudeE7` have to be divided by 1e7 to get the float value
 * `velocity` is in metres per second (multiply by 3.6 to get km/h)
+* Importing a 500 MiB JSON file with 2.3m records into SQLite takes about 22 minutes
