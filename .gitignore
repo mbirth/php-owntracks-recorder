@@ -1,3 +1,4 @@
+/assets/*.js
 /assets/*.js.map
 /bower_components/
 /tools/Location History.json

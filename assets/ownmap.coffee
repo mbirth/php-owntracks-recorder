@@ -2,6 +2,7 @@ class window.OwnMap
     constructor: ->
         console.log 'initMap'
 
+        @my_markers = {}
         @trackerIDs = []
         @live_view = false
 
@@ -122,7 +123,7 @@ class window.OwnMap
             trackerIDs = Object.keys _tid_markers
 
             tid_markers = []   # markers collected from json
-            @my_markers = []
+            @my_markers = {}
             my_latlngs = []
             @polylines = []
 
@@ -148,11 +149,11 @@ class window.OwnMap
                                 velocityString = if marker.velocity? then "<br/>Velocity: #{marker.velocity} km/h" else ''
                                 locationString = ""
                                 if marker.display_name?
-                                    locationString = "<br/>Location: <a href='javascript:showBoundingBox(#{i});' title='Show location bounding box'>#{marker.display_name}</a>"
+                                    locationString = "<br/>Location: <a href=\"#\" onclick=\"showBoundingBox('#{tid}', #{i});\" title=\"Show location bounding box\">#{marker.display_name}</a>"
                                 else
-                                    locationString = "<br/>Location: <span id='loc_#{i}'><a href='javascript:geodecodeMarker(#{i});' title='Get location (geodecode)'>Get location</a></span>"
+                                    locationString = "<br/>Location: <span id=\"loc_#{tid}_#{i}\"><a href=\"#\" onclick=\"geodecodeMarker('#{tid}', #{i});\" title=\"Get location (geodecode)\">Get location</a></span>"
                                 
-                                removeString = "<br/><br/><a href=\"javascript:deleteMarker('#{tid}', #{i});\">Delete marker</a>"
+                                removeString = "<br/><br/><a href=\"#\" onclick=\"deleteMarker('#{tid}', #{i});\">Delete marker</a>"
                                 
                                 # prepare popup HTML code for marker
                                 popupString = dateString + trackerIDString + accuracyString + headingString + velocityString + locationString + removeString
@@ -192,6 +193,7 @@ class window.OwnMap
                                 #}
                                 
                                 # array of all markers for display / hide markers + initial auto zoom scale
+                                my_marker.epoch = markers[i].epoch   # needed for geocoding/deleting
                                 @my_markers[tid][i] = my_marker
 
                             # var polylines[tid] = L.polyline(my_latlngs[tid]).addTo(mymap);
@@ -273,3 +275,43 @@ class window.OwnMap
         else
             clearTimeout @live_view_timer
         return @live_view
+
+    geodecodeMarker: (tid, i) ->
+        console.log 'geodecodeMarker: %o, %o', tid, i
+        # ajax call to remove marker from backend
+        $.ajax 
+            url: 'rpc.php'
+            data:
+                'epoch': @my_markers[tid][i].epoch
+                'action': 'geoDecode'
+            type: 'get'
+            dataType: 'json'
+            success: (data, status) =>
+                if data.status?
+                    console.log 'geodecodeMarker: Status=%o, Data=%o', status, data
+                    
+                    # update marker data
+                    $("#loc_#{tid}_#{i}").html "<a href='javascript:showBoundingBox(#{tid}, #{i});' title='Show location bounding box'>#{data.location}</a>"
+                else
+                    console.error 'geodecodeMarker: Status=%o, Data=%o', status, data
+            error: (xhr, desc, err) ->
+                console.error 'geodecodeMarker: XHR=%o, Error=%o, Details=%o', xhr, err, desc
+
+    deleteMarker: (tid, i) ->
+        console.log 'deleteMarker: %o, %o', tid, i
+
+        # ajax call to remove marker from backend
+        $.ajax
+            url: 'rpc.php'
+            data:
+                'epoch': @my_markers[tid][i].epoch
+                'action': 'deleteMarker'
+            type: 'get'
+            dataType: 'json'
+            success: (data, status) =>
+                if data.status
+                    @getMarkers()
+                else
+                    console.error 'deleteMarker: Status=%o Data=%o', status, data
+            error: (xhr, desc, err) ->
+                console.error 'deleteMarker: XHR=%o, Error=%o, Details=%o', xhr, err, desc

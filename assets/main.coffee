@@ -151,3 +151,17 @@ window.setLiveMap = ->
         $('#livemap_on').removeClass('btn-default').addClass('btn-primary').addClass 'active'
     else
         $('#livemap_on').addClass('btn-default').removeClass('btn-primary').removeClass 'active'
+
+window.geodecodeMarker = (tid, i) ->
+    console.log 'geodecodeMarker: %o, %o', tid, i
+    window.mymap.geodecodeMarker tid, i
+
+window.deleteMarker = (tid, i) ->
+    console.log 'deleteMarker: %o, %o', tid, i
+    if confirm "Do you really want to delete this marker for #{tid}?"
+        console.log 'deleteMarker: Confirmation given'
+        window.mymap.deleteMarker tid, i
+
+window.showBoundingBox = (tid, i) ->
+    console.log 'showBoundingBox: %o, %o', tid, i
+    console.warn 'NOT YET IMPLEMENTED'
