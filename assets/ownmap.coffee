@@ -27,12 +27,33 @@ class window.OwnMap
             # $('#show_markers').prop('checked',false);
             $('#show_markers').removeClass('btn-default').addClass('btn-primary').addClass('active')
 
-        @mymap = L.map('mapid').setView [52.52, 13.44], 11
+        layers =
+            'OpenStreetMap': L.tileLayer 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c']
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            'OSM/DE': L.tileLayer 'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c']
+                attribution: '© <a href="https://www.openstreetmap.de/faq.html#lizenz">OpenStreetMap</a>'
+            'Hike&amp;Bike': L.tileLayer 'http://{s}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
+                subdomains: ['a', 'b', 'c']
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            'Stamen Toner': L.tileLayer '//stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png',
+                subdomains: ['a', 'b', 'c', 'd']
+                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
+            'Stamen Watercolor': L.tileLayer '//stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
+                subdomains: ['a', 'b', 'c', 'd']
+                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            subdomains: ['a','b','c']
-        }).addTo(@mymap)
+        overlays =
+            'Hillshades': L.tileLayer 'http://{s}.tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png',
+                subdomains: ['a', 'b', 'c']
+
+        @mymap = L.map 'mapid',
+            center: [52.52, 13.44]
+            zoom: 11
+            layers: [layers['OpenStreetMap']]
+
+        L.control.layers(layers, overlays).addTo @mymap
         @getMarkers()
 
     updateTrackerIDs: (_tid_markers) ->
