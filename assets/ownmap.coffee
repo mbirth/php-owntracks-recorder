@@ -73,7 +73,7 @@ class window.OwnMap
                 $(this).remove()
             if _tid_markers?
                 @trackerIDs = Object.keys _tid_markers
-                $.each @trackerIDs, (index, value) ->
+                for own idx, value of @trackerIDs
                     $('#trackerID_selector').append $ '<option>',
                         value: value
                         text: value
@@ -117,11 +117,10 @@ class window.OwnMap
 
     eraseMap: ->
         console.log 'eraseMap'
-        $.each @trackerIDs, (_index, _tid) =>
+        for own _index, _tid of @trackerIDs
             if _tid in @polylines
                 @polylines[_tid].removeFrom @mymap
-        $.each @trackerIDs, (_index, _tid) =>
-            $.each @my_markers[_tid], (_index2, _marker) ->
+            for own _index2, _marker of @my_markers[_tid]
                 _marker.remove()
         return true
 
@@ -151,7 +150,6 @@ class window.OwnMap
                 @eraseMap()
 
             nb_markers = 0   # global markers counter
-            trackerIDs = Object.keys _tid_markers
 
             tid_markers = []   # markers collected from json
             @my_markers = {}
@@ -272,9 +270,9 @@ class window.OwnMap
 
     showMarkers: ->
         console.log 'showMarkers'
-        $.each @trackerIDs, (_index, _tid) =>
+        for own _index, _tid of @trackerIDs
             if window.trackerID == _tid or window.trackerID == 'all'
-                $.each @my_markers[_tid], (_index2, _marker) =>
+                for own _index2, _marker of @my_markers[_tid]
                     # add marker to map except first & last (never removed)
                     if _index2 != 0 or _index2 != @my_markers[_tid].length
                         _marker.addTo @mymap
@@ -282,9 +280,9 @@ class window.OwnMap
 
     hideMarkers: ->
         console.log 'hideMarkers'
-        $.each @trackerIDs, (_index, _tid) =>
+        for own _index, _tid of @trackerIDs
             if window.trackerID == _tid or window.trackerID == 'all'
-                $.each @my_markers[_tid], (_index2, _marker) =>
+                for own _index2, _marker of @my_markers[_tid]
                     # remove marker except first & last
                     if _index2 > 0 and _index2 < @my_markers[_tid].length-1
                         _marker.remove()
