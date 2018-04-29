@@ -16,36 +16,36 @@
 <body>
   <div class="container">
     <div class="row page-header">
-      <div class="col-xs-1 text-left">
+      <div class="col-1 text-left">
         <a href="#" onclick="gotoDate(datePrevFrom, datePrevTo);" class="btn btn-primary" role="button">
-          <span class="hidden-xs">Previous</span>
-          <span class="visible-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
+          <span class="d-none d-sm-block">Previous</span>
+          <span class="d-block d-sm-none"><span class="glyphicon glyphicon-arrow-left"></span></span>
         </a>
       </div>
-      <div class="col-xs-5 text-center">
+      <div class="col-5 text-center">
         <div class="input-group input-daterange">
-          <input type="text" class="form-control" value="" id="dateFrom"/>
-          <span class="input-group-addon">to</span>
-          <input type="text" class="form-control" value="" id="dateTo"/>
+          <input type="text" class="form-control" size="10" value="" id="dateFrom"/>
+          <span class="col-form-label">&nbsp;to&nbsp;</span>
+          <input type="text" class="form-control" size="10" value="" id="dateTo"/>
         </div>
       </div>
-      <div class="col-xs-6 text-right">
+      <div class="col-6 text-right">
         <div class="btn-group" role="group">
           <a role="button" data-toggle="collapse" href="#configCollapse" class="btn btn-default" id="configButton">
-            <span class="hidden-xs">Config</span>
-            <span class="visible-xs"><span class="glyphicon glyphicon-cog"></span></span>
+            <span class="d-none d-sm-block">Config</span>
+            <span class="d-block d-sm-none"><span class="glyphicon glyphicon-cog"></span></span>
           </a>
           <a href="#" onclick="resetZoom();" class="btn btn-default">
-            <span class="hidden-xs">Reset view</span>
-            <span class="visible-xs"><span class="glyphicon glyphicon-screenshot"></span></span>
+            <span class="d-none d-sm-block">Reset view</span>
+            <span class="d-block d-sm-none"><span class="glyphicon glyphicon-screenshot"></span></span>
           </a>
           <a href="#" onclick="gotoDate();" class="btn btn-default" style="display: inline-block;" id="todayButton">
-            <span class="hidden-xs">Today</span>
-            <span class="visible-xs"><span class="glyphicon glyphicon-arrow-up"></span></span>
+            <span class="d-none d-sm-block">Today</span>
+            <span class="d-block d-sm-none"><span class="glyphicon glyphicon-arrow-up"></span></span>
           </a>
           <a href="#" onclick="gotoDate(dateNextFrom, dateNextTo);" class="btn btn-primary" style="display: inline-block;" id="nextButton">
-            <span class="hidden-xs">Next</span>
-            <span class="visible-xs"><span class="glyphicon glyphicon-arrow-right"></span></span>
+            <span class="d-none d-sm-block">Next</span>
+            <span class="d-block d-sm-none"><span class="glyphicon glyphicon-arrow-right"></span></span>
           </a>
         </div>
       </div>
@@ -53,34 +53,34 @@
     <div class="collapse" id="configCollapse"><br/>
       <div class="well">
         <div class="row">
-          <div class="col-xs-2 text-left">
+          <div class="col-2 text-left">
             <a href="#" onclick="showHideMarkers();" class="btn btn-default" id="show_markers">
-              <span class="hidden-xs">Show markers</span>
-              <span class="visible-xs"><span class="glyphicon glyphicon-map-marker"></span></span>
+              <span class="d-none d-sm-block">Show markers</span>
+              <span class="d-block d-sm-none"><span class="glyphicon glyphicon-map-marker"></span></span>
             </a>
           </div>
-          <div class="col-xs-2 text-left">
+          <div class="col-2 text-left">
             <a href="#" onclick="setLiveMap();" class="btn btn-default" id="livemap_on">
-              <span class="hidden-xs">Live map</span>
-              <span class="visible-xs"><span class="glyphicon glyphicon-play-circle"></span></span>
+              <span class="d-none d-sm-block">Live map</span>
+              <span class="d-block d-sm-none"><span class="glyphicon glyphicon-play-circle"></span></span>
             </a>
           </div>
-          <div class="col-xs-8 text-right">
-            <form class="form-inline"><span class="hidden-xs">Accuracy: </span>
+          <div class="col-8 text-right">
+            <form class="form-inline"><span class="d-none d-sm-block col-form-label">Accuracy: </span>
               <div class="input-group">
                 <input type="number" size="4" class="form-control" id="accuracy" value="{{accuracy}}"/>
-                <span class="input-group-addon"><span class="hidden-xs">metres</span><span class="visible-xs">m</span></span>
-                <span class="input-group-btn"><button type="button" class="btn btn-default" id="accuracySubmit">OK</button></span>
+                <span class="col-form-label"><span class="d-none d-sm-block">&nbsp;metres&nbsp;</span><span class="d-block d-sm-none">&nbsp;m&nbsp;</span></span>
+                <span class=""><button type="button" class="btn btn-default" id="accuracySubmit">OK</button></span>
               </div>
             </form>
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-12 text-left">
+          <div class="col-12 text-left">
             <div class="input-group">
-              <div class="input-group-addon">
-                <span class="hidden-xs">Tracker ID</span>
-                <span class="visible-xs"><span class="glyphicon glyphicon-user"></span></span>
+              <div class="col-form-label">
+                <span class="d-none d-sm-block">Tracker ID: </span>
+                <span class="d-block d-sm-none"><span class="glyphicon glyphicon-user"></span></span>
               </div>
               <select class="form-control" name="tracker_id" id="trackerID_selector">
                 <option value="all">all</option>
