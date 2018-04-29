@@ -118,7 +118,7 @@ class window.OwnMap
     eraseMap: ->
         console.log 'eraseMap'
         for own _index, _tid of @trackerIDs
-            if _tid in @polylines
+            if _tid of @polylines
                 @polylines[_tid].removeFrom @mymap
             for own _index2, _marker of @my_markers[_tid]
                 _marker.remove()
@@ -226,18 +226,17 @@ class window.OwnMap
                                 @my_markers[tid][i] = my_marker
 
                             # var polylines[tid] = L.polyline(my_latlngs[tid]).addTo(mymap);
-                            @polylines[tid] = L.hotline(my_latlngs[tid], {
-                                min: 0,
-                                max: markers.length,
-                                palette: {
-                                    0.0: 'green',
-                                    0.5: 'yellow',
+                            @polylines[tid] = L.hotline(my_latlngs[tid],
+                                min: 0
+                                max: markers.length
+                                palette:
+                                    0.0: 'green'
+                                    0.5: 'yellow'
                                     1.0: 'red'
-                                },
-                                weight: 4,
-                                outlineColor: '#000000',
+                                weight: 4
+                                outlineColor: '#000000'
                                 outlineWidth: 0.5
-                            }).addTo(@mymap)
+                            ).addTo @mymap
                         else
                             console.error 'drawMap: No location data for trackerID "%o" found!', window.trackerID
                             alert "No location data for trackerID '#{window.trackerID}' found!"
