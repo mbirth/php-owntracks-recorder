@@ -17,9 +17,9 @@ class window.OwnMap
         for fg, i in colours
             bg1 = if fg is 'green' then 'darkgreen' else 'green'
             bg2 = if fg is 'red' then 'darkred' else 'red'
-            @marker_start_icons[i] = L.AwesomeMarkers.icon({icon: 'play', markerColor: fg, iconColor: bg1 })
-            @marker_finish_icons[i] = L.AwesomeMarkers.icon({icon: 'stop', markerColor: fg, iconColor: bg2 })
-            @marker_icons[i] = L.AwesomeMarkers.icon({icon: 'user', markerColor: fg })
+            @marker_start_icons[i] = L.AwesomeMarkers.icon({icon: 'play', prefix: 'fa', markerColor: fg, iconColor: bg1 })
+            @marker_finish_icons[i] = L.AwesomeMarkers.icon({icon: 'stop', prefix: 'fa', markerColor: fg, iconColor: bg2 })
+            @marker_icons[i] = L.AwesomeMarkers.icon({icon: 'user', prefix: 'fa', markerColor: fg })
 
         # set checkbox
         if show_markers is '1'
