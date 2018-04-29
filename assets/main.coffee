@@ -84,7 +84,7 @@ window.changeTrackerID = ->
         console.log 'changeTrackerID: trackerID cookie = %o', Cookies.get 'trackerID'
         
         window.trackerID = _trackerID
-        drawMap()
+        window.mymap.drawMap()
     else
         $('#configCollapse').collapse 'hide'
     return false
