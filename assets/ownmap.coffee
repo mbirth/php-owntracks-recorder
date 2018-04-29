@@ -1,6 +1,6 @@
 class window.OwnMap
     constructor: ->
-        console.log 'initMap'
+        console.log 'OwnMap::constructor()'
 
         @my_markers = {}
         @trackerIDs = []
@@ -104,7 +104,7 @@ class window.OwnMap
                 $('#mapid').css 'filter', 'blur(5px)'
             success: (data, status) =>
                 console.log 'getMarkers XHR Answer: %o', data
-                if data.status
+                if data.status? and data.status
                     jsonMarkers = data.markers
                     @updateTrackerIDs jsonMarkers
                     if @drawMap jsonMarkers
