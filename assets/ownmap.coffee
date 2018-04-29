@@ -29,19 +29,29 @@ class window.OwnMap
 
         layers =
             'OpenStreetMap': L.tileLayer 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: ['a','b','c']
+                subdomains: 'abc'
+                detectRetina: true
                 attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             'OSM/DE': L.tileLayer 'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
-                subdomains: ['a','b','c']
+                subdomains: 'abc'
+                detectRetina: true
                 attribution: '© <a href="https://www.openstreetmap.de/faq.html#lizenz">OpenStreetMap</a>'
+            'OpenTopoMap': L.tileLayer 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+                subdomains: 'abc'
+                detectRetina: true
+                maxZoom: 17
+                attribution: 'Map data: © <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM | Map tiles: © <a href="http://opentopomap.org/">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
             'Hike&amp;Bike': L.tileLayer 'http://{s}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
-                subdomains: ['a', 'b', 'c']
+                subdomains: 'abc'
+                detectRetina: true
                 attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            'Stamen Toner': L.tileLayer '//stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png',
-                subdomains: ['a', 'b', 'c', 'd']
+            'Stamen Toner': L.tileLayer 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png',
+                subdomains: 'abcd'
+                detectRetina: true
                 attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
-            'Stamen Watercolor': L.tileLayer '//stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
-                subdomains: ['a', 'b', 'c', 'd']
+            'Stamen Watercolor': L.tileLayer 'http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg',
+                subdomains: 'abcd'
+                detectRetina: true
                 attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
 
         overlays =
