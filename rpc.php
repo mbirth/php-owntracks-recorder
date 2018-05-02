@@ -33,4 +33,11 @@ if (array_key_exists('action', $_REQUEST)) {
 }
 
 header("Content-type: application/javascript");
-echo json_encode($response);
+
+if (isset($_GET['callback'])) {
+    // JSONP
+    echo $_GET['callback'] . '(' . json_encode($response) . ');';
+} else {
+    // JSON
+    echo json_encode($response);
+}
