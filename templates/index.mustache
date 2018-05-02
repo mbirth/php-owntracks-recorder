@@ -8,8 +8,10 @@
   {{>index_assets}}
 
   <!-- our scripts -->
-  <script type="text/javascript" src="assets/main.js"></script>
+  <script type="text/javascript" src="assets/rpcclient.js"></script>
+  <script type="text/javascript" src="assets/markermgr.js"></script>
   <script type="text/javascript" src="assets/ownmap.js"></script>
+  <script type="text/javascript" src="assets/main.js"></script>
   <link rel="stylesheet" href="assets/style.css"/>
   <title>Your Own Tracks</title>
 </head>
@@ -102,8 +104,9 @@
         window.datepicker_language = '{{datepicker_language}}';
 
         initUI();
-        //initMap();
-        window.mymap = new OwnMap();
+        window.rpc = new RpcClient('rpc.php?callback=?');
+        window.markers = new MarkerMgr(window.rpc);
+        window.mymap = new OwnMap(window.markers);
     });
   </script>
 </body>

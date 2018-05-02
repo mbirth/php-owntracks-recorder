@@ -1,6 +1,8 @@
 class window.OwnMap
-    constructor: ->
-        console.log 'OwnMap::constructor()'
+    constructor: (markermgr) ->
+        console.log 'OwnMap::constructor(%o)', markermgr
+
+        @markermgr = markermgr
 
         @my_markers = {}
         @trackerIDs = []
