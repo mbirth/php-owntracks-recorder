@@ -16,6 +16,7 @@
   "private": true,
   "dependencies": {
     "jQuery": "^3.3.1",
+    "coffeescript": "^2.3.0",
     "bootstrap": "^4.1.0",
     "bootstrap-datepicker": "^1.6.4",
     "font-awesome": "*",
