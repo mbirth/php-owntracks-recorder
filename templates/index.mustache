@@ -26,9 +26,9 @@
       </div>
       <div class="col-5 text-center">
         <div class="input-group input-daterange">
-          <input type="text" class="form-control" size="10" value="" id="dateFrom"/>
+          <input type="date" class="form-control" value="" id="dateFrom"/>
           <span class="col-form-label">&nbsp;to&nbsp;</span>
-          <input type="text" class="form-control" size="10" value="" id="dateTo"/>
+          <input type="date" class="form-control" value="" id="dateTo"/>
         </div>
       </div>
       <div class="col-6 text-right">
@@ -101,7 +101,6 @@
         window.default_trackerID = '{{default_tracker_id}}';
         window.trackerID = '{{tracker_id}}';
         window.accuracy = {{accuracy}};
-        window.datepicker_language = '{{datepicker_language}}';
 
         initUI();
         window.rpc = new RpcClient('rpc.php?callback=?');

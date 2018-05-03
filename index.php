@@ -29,7 +29,6 @@ $mustache = new \Mustache_Engine(array(
 $vars = array(
     'accuracy' => $accuracy,
     'tracker_id' => $trackerID,
-    'datepicker_language' => $_config['datepicker-language'],
 );
 
 $tpl = $mustache->loadTemplate('index');

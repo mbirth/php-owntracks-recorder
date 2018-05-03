@@ -4,8 +4,6 @@
 
 setlocale(LC_TIME, 'en_GB');
 
-$_config['datepicker-language'] = 'en-GB';
-
 // MySQL / MariaDB
 $_config['sql_type'] = 'mysql';
 $_config['sql_host'] = '';

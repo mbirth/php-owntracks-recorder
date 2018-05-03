@@ -102,12 +102,7 @@ window.initUI = ->
     # date params event handlers
     updateDateNav()
 
-    $('.input-daterange').datepicker
-        format: 'yyyy-mm-dd'
-        language: window.datepicker_language
-        endDate: '0d'
-
-    $('.input-daterange').datepicker().on 'hide', (e) ->
+    $('.input-daterange').on 'change', (e) ->
         return gotoDate $('#dateFrom').val(), $('#dateTo').val()
 
     # accuracy event handlers
