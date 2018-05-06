@@ -79,7 +79,7 @@ window.gotoDate = (_dateFrom, _dateTo, pushState) ->
         window.history.pushState data, '', url
 
     updateDateNav()
-    window.mymap.getMarkers()
+    window.mymap.fetchMarkers()
     return false
 
 window.gotoAccuracy = ->
@@ -92,7 +92,7 @@ window.gotoAccuracy = ->
         console.log 'Accuracy cookie = %o', Cookies.get 'accuracy'
         
         window.accuracy = _accuracy
-        window.mymap.getMarkers()
+        window.mymap.fetchMarkers()
     else
         $('#configCollapse').collapse 'hide'
     return false

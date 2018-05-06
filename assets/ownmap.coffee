@@ -66,10 +66,10 @@ class window.OwnMap
             layers: [layers['OpenStreetMap']]
 
         L.control.layers(layers, overlays).addTo @mymap
-        @getMarkers()
+        @fetchMarkers()
 
     updateTrackerIDs: (_tid_markers) ->
-        console.log 'updateTrackerIDs: %o', _tid_markers
+        console.log 'OwnMap::updateTrackerIDs(%o)', _tid_markers
         try
             $("#trackerID_selector option[value!='all']").each ->
                 $(this).remove()
@@ -86,39 +86,18 @@ class window.OwnMap
             console.error 'updateTrackerIDs: %o', err
             alert err.message
 
-    getMarkers: ->
-        console.log 'getMarkers'
-        params =
-            'action': 'getMarkers'
-            'dateFrom': window.dateFrom
-            'dateTo': window.dateTo
-            'accuracy': window.accuracy
-            #'trackerID' : trackerID
-            #'epoc': time()
-        console.log 'getMarkers XHR Params: %o', params
-        # ajax call to get list of markers
-        $.ajax
-            url: 'rpc.php'
-            data: params
-            type: 'GET'
-            dataType: 'json'
-            beforeSend: (xhr) ->
-                $('#mapid').css 'filter', 'blur(5px)'
-            success: (data, status) =>
-                console.log 'getMarkers XHR Answer: %o', data
-                if data.status? and data.status
-                    jsonMarkers = data.markers
-                    @updateTrackerIDs jsonMarkers
-                    if @drawMap jsonMarkers
-                        $('#mapid').css 'filter', 'blur(0px)'
-                else
-                    console.error 'getMarkers: Status=%o | Data=%o', status, data
-            error: (xhr, desc, err) ->
-                console.log xhr
-                console.error 'getMarkers: %o\nError: %o', desc, err
+    fetchMarkers: ->
+        console.log 'OwnMap::fetchMarkers()'
+        @markermgr.fetchMarkers window.dateFrom, window.dateTo, window.accuracy
+            .done (data) =>
+                console.log '### data=%o', data
+                jsonMarkers = data
+                @updateTrackerIDs jsonMarkers
+                if @drawMap jsonMarkers
+                    $('#mapid').css 'filter', 'blur(0px)'
 
     eraseMap: ->
-        console.log 'eraseMap'
+        console.log 'OwnMap::eraseMap()'
         for own _index, _tid of @trackerIDs
             if _tid of @polylines
                 @polylines[_tid].removeFrom @mymap
@@ -127,7 +106,7 @@ class window.OwnMap
         return true
 
     drawMap: (_tid_markers) ->
-        console.log 'drawMap: %o', _tid_markers
+        console.log 'OwnMap::drawMap(%o)', _tid_markers
         try
             if not _tid_markers? and tid_markers?
                 _tid_markers = tid_markers
@@ -263,14 +242,14 @@ class window.OwnMap
             return false
 
     setDefaultZoom: ->
-        console.log 'setDefaultZoom'
+        console.log 'OwnMap::setDefaultZoom()'
         setTimeout =>
             @default_zoom = @mymap.getZoom()
             @default_centre = @mymap.getCenter()
         , 2000
 
     showMarkers: ->
-        console.log 'showMarkers'
+        console.log 'OwnMap::showMarkers()'
         for own _index, _tid of @trackerIDs
             if window.trackerID == _tid or window.trackerID == 'all'
                 for own _index2, _marker of @my_markers[_tid]
@@ -280,7 +259,7 @@ class window.OwnMap
         return true
 
     hideMarkers: ->
-        console.log 'hideMarkers'
+        console.log 'OwnMap::hideMarkers()'
         for own _index, _tid of @trackerIDs
             if window.trackerID == _tid or window.trackerID == 'all'
                 for own _index2, _marker of @my_markers[_tid]
@@ -290,24 +269,24 @@ class window.OwnMap
         return true
 
     resetZoom: ->
-        console.log 'resetZoom'
+        console.log 'OwnMap::resetZoom()'
         @mymap.setView @default_centre, @default_zoom
 
     toggleLiveView: ->
-        console.log 'toggleLiveView'
+        console.log 'OwnMap::toggleLiveView()'
         @live_view = !@live_view
         console.log 'Live view is now: %o', @live_view
 
         if @live_view
             @live_view_timer = setTimeout =>
-                @getMarkers()
+                @fetchMarkers()
             , 3000
         else
             clearTimeout @live_view_timer
         return @live_view
 
     geodecodeMarker: (tid, i) ->
-        console.log 'geodecodeMarker: %o, %o', tid, i
+        console.log 'OwnMap::geodecodeMarker(%o, %o)', tid, i
         # ajax call to remove marker from backend
         $.ajax 
             url: 'rpc.php'
@@ -328,7 +307,7 @@ class window.OwnMap
                 console.error 'geodecodeMarker: XHR=%o, Error=%o, Details=%o', xhr, err, desc
 
     deleteMarker: (tid, i) ->
-        console.log 'deleteMarker: %o, %o', tid, i
+        console.log 'OwnMap::deleteMarker(%o, %o)', tid, i
 
         # ajax call to remove marker from backend
         $.ajax
@@ -340,7 +319,7 @@ class window.OwnMap
             dataType: 'json'
             success: (data, status) =>
                 if data.status
-                    @getMarkers()
+                    @fetchMarkers()
                 else
                     console.error 'deleteMarker: Status=%o Data=%o', status, data
             error: (xhr, desc, err) ->

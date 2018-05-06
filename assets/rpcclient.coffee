@@ -14,6 +14,13 @@ class window.RpcClient
             #'trackerID' : trackerID
             #'epoc': time()
         xhr = $.getJSON @url, params
-        xhr.fail (xhr, status, error) ->
-            console.error 'XHR error: xhr=%o status=%o error=%o', xhr, status, error
         return xhr
+            .fail (xhr, status, error) ->
+                console.error 'XHR error: xhr=%o status=%o error=%o', xhr, status, error
+            .then (data) =>
+                console.log 'RpcClient::getMarkers got: data=%o', data
+                if data.status? and data.status
+                    return data.markers
+                else
+                    console.error 'Marker result not okay.'
+                    return $.Deferred().reject 'Marker result not okay.'
