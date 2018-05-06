@@ -118,8 +118,18 @@ window.initUI = ->
     _GET = new URLSearchParams window.location.search
 
     today = new Date().toISOString()[...10]
-    window.dateFrom = if _GET.has 'dateFrom' then _GET.get 'dateFrom' else today
-    window.dateTo = if _GET.has 'dateTo' then _GET.get 'dateTo' else today
+
+    # sanitise date input
+    try
+        window.dateFrom = if _GET.has 'dateFrom' then new Date(_GET.get 'dateFrom').toISOString()[...10] else today
+    catch err
+        window.dateFrom = today
+
+    try
+        window.dateTo = if _GET.has 'dateTo' then new Date(_GET.get 'dateTo').toISOString()[...10] else today
+    catch err
+        window.dateTo = today
+
     $('#dateFrom').val window.dateFrom
     $('#dateTo').val window.dateTo
 
