@@ -90,8 +90,8 @@ class window.OwnMap
         console.log 'getMarkers'
         params =
             'action': 'getMarkers'
-            'dateFrom': window.dateFrom.format 'YYYY-MM-DD'
-            'dateTo': window.dateTo.format 'YYYY-MM-DD'
+            'dateFrom': window.dateFrom
+            'dateTo': window.dateTo
             'accuracy': window.accuracy
             #'trackerID' : trackerID
             #'epoc': time()

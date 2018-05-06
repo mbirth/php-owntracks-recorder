@@ -3,29 +3,52 @@ window.handlePopState = (event) ->
     if event.state
         return gotoDate event.state.dateFrom, event.state.dateTo, false
 
+window.goPrevious = ->
+    window.gotoDate window.datePrevFrom, window.datePrevTo
+
+window.goNext = ->
+    window.gotoDate window.dateNextFrom, window.dateNextTo
+
 window.updateDateNav = (_dateFrom, _dateTo) ->
     console.log 'updateDateNav: %o, %o', _dateFrom, _dateTo
     
     _dateFrom ?= window.dateFrom
     _dateTo ?= window.dateTo
 
-    diff = _dateTo.diff _dateFrom, 'days'
-    # if(dateTo.isSame(dateFrom)){ diff = diff+1; }
-    
-    window.datePrevTo = moment(_dateFrom).subtract 1, 'days'
-    window.datePrevFrom = moment(datePrevTo).subtract diff, 'days'
-    
-    window.dateNextFrom = moment(_dateTo).add 1, 'days'
-    window.dateNextTo = moment(dateNextFrom).add diff, 'days'
-    
-    # disable Next button
-    if dateNextFrom.isAfter moment()
+    # Prepare for calculations
+    objFrom = new Date _dateFrom
+    objTo   = new Date _dateTo
+
+    span = objTo.getTime() - objFrom.getTime()   # milliseconds
+
+    console.log 'Current range: %o - %o (%o)', _dateFrom, _dateTo, span
+
+    objPrevTo = new Date objFrom.getTime()
+    objPrevTo.setDate objPrevTo.getDate() - 1   # get day before current "dateFrom"
+    objPrevFrom = new Date objPrevTo.getTime() - span   # calculate span
+
+    window.datePrevFrom = objPrevFrom.toISOString()[...10]
+    window.datePrevTo   = objPrevTo.toISOString()[...10]
+
+    console.log 'PREV button will go to: %o - %o', window.datePrevFrom, window.datePrevTo
+
+    objNextFrom = new Date objTo.getTime()
+    objNextFrom.setDate objNextFrom.getDate() + 1   # get day after current "dateTo"
+    objNextTo   = new Date objNextFrom.getTime() + span   # calculate span
+
+    window.dateNextFrom = objNextFrom.toISOString()[...10]
+    window.dateNextTo   = objNextTo.toISOString()[...10]
+
+    console.log 'NEXT button will go to: %o - %o', window.dateNextFrom, window.dateNextTo
+
+    # disable Next button if we'd end up in the future
+    if objNextFrom > new Date()
         $('#nextButton').addClass 'disabled'
     else
         $('#nextButton').removeClass 'disabled'
     
-    # disable today button
-    if _dateFrom.isSame moment(), 'day'
+    # disable today button if dateFrom isn't today
+    if _dateFrom is new Date().toISOString()[...10]
         $('#todayButton').addClass 'disabled'
         $('#livemap_on').removeClass 'disabled'
     else
@@ -35,21 +58,22 @@ window.updateDateNav = (_dateFrom, _dateTo) ->
 window.gotoDate = (_dateFrom, _dateTo, pushState) ->
     console.log 'gotoDate: %o, %o, %o', _dateFrom, _dateTo, pushState
 
-    _dateFrom = if _dateFrom? then moment(_dateFrom) else moment()
-    _dateTo = if _dateTo? then moment(_dateTo) else moment()
+    today = new Date().toISOString()[...10]
+    _dateFrom = _dateFrom ? today
+    _dateTo = _dateTo ? today
     pushState = pushState ? true
 
     window.dateFrom = _dateFrom
     window.dateTo = _dateTo
     
-    $('#dateFrom').val moment(window.dateFrom).format('YYYY-MM-DD')
-    $('#dateTo').val moment(window.dateTo).format('YYYY-MM-DD')
+    $('#dateFrom').val window.dateFrom
+    $('#dateTo').val window.dateTo
 
     # push selected dates in window.history stack
     if pushState
         data =
-            dateFrom: moment(window.dateFrom).format 'YYYY-MM-DD'
-            dateTo: moment(window.dateTo).format 'YYYY-MM-DD'
+            dateFrom: window.dateFrom
+            dateTo: window.dateTo
         url = "#{window.location.pathname}?dateFrom=#{data.dateFrom}&dateTo=#{data.dateTo}"
         console.log 'Pushing state: %o with data: %o', url, data
         window.history.pushState data, '', url
@@ -67,7 +91,6 @@ window.gotoAccuracy = ->
         Cookies.set 'accuracy', _accuracy
         console.log 'Accuracy cookie = %o', Cookies.get 'accuracy'
         
-        # location.href='./?dateFrom='+moment(dateFrom).format('YYYY-MM-DD') + '&dateTo=' + moment(dateTo).format('YYYY-MM-DD') + '&accuracy=' + _accuracy + '&trackerID=' + trackerID;
         window.accuracy = _accuracy
         window.mymap.getMarkers()
     else
@@ -94,10 +117,11 @@ window.initUI = ->
 
     _GET = new URLSearchParams window.location.search
 
-    window.dateFrom = if _GET.has 'dateFrom' then moment _GET.get 'dateFrom' else moment()
-    window.dateTo = if _GET.has 'dateTo' then moment _GET.get 'dateTo' else moment()
-    $('#dateFrom').val window.dateFrom.format 'YYYY-MM-DD'
-    $('#dateTo').val window.dateTo.format 'YYYY-MM-DD'
+    today = new Date().toISOString()[...10]
+    window.dateFrom = if _GET.has 'dateFrom' then _GET.get 'dateFrom' else today
+    window.dateTo = if _GET.has 'dateTo' then _GET.get 'dateTo' else today
+    $('#dateFrom').val window.dateFrom
+    $('#dateTo').val window.dateTo
 
     # date params event handlers
     updateDateNav()
