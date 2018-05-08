@@ -11,44 +11,51 @@ window.goNext = ->
 
 window.updateDateNav = (_dateFrom, _dateTo) ->
     console.log 'updateDateNav: %o, %o', _dateFrom, _dateTo
-    
+
     _dateFrom ?= window.dateFrom
     _dateTo ?= window.dateTo
 
     # Prepare for calculations
     objFrom = new Date _dateFrom
     objTo   = new Date _dateTo
+    today   = new Date
+    today.setHours 0
+    today.setMinutes 0
+    today.setSeconds 0
+    today   = new Date today.getTime() - today.getTimezoneOffset() * 60000
 
     span = objTo.getTime() - objFrom.getTime()   # milliseconds
 
-    console.log 'Current range: %o - %o (%o)', _dateFrom, _dateTo, span
+    #console.log 'Current range: %o - %o (%o)', _dateFrom, _dateTo, span
+    #console.log 'Objects: %o - %o', objFrom, objTo
 
     objPrevTo = new Date objFrom.getTime()
-    objPrevTo.setDate objPrevTo.getDate() - 1   # get day before current "dateFrom"
+    objPrevTo.setUTCDate objPrevTo.getUTCDate() - 1   # get day before current "dateFrom"
     objPrevFrom = new Date objPrevTo.getTime() - span   # calculate span
 
     window.datePrevFrom = objPrevFrom.toISOString()[...10]
     window.datePrevTo   = objPrevTo.toISOString()[...10]
 
-    console.log 'PREV button will go to: %o - %o', window.datePrevFrom, window.datePrevTo
+    #console.log 'PREV button will go to: %o - %o', window.datePrevFrom, window.datePrevTo
 
     objNextFrom = new Date objTo.getTime()
-    objNextFrom.setDate objNextFrom.getDate() + 1   # get day after current "dateTo"
+    objNextFrom.setUTCDate objNextFrom.getUTCDate() + 1   # get day after current "dateTo"
     objNextTo   = new Date objNextFrom.getTime() + span   # calculate span
 
     window.dateNextFrom = objNextFrom.toISOString()[...10]
     window.dateNextTo   = objNextTo.toISOString()[...10]
 
-    console.log 'NEXT button will go to: %o - %o', window.dateNextFrom, window.dateNextTo
+    #console.log 'NEXT button will go to: %o - %o', window.dateNextFrom, window.dateNextTo
 
     # disable Next button if we'd end up in the future
-    if objNextFrom > new Date()
+    if objNextFrom > today
+        console.log 'Disabling NEXT button because %o is in the future. (Today is %o)', objNextFrom, today
         $('#nextButton').addClass 'disabled'
     else
         $('#nextButton').removeClass 'disabled'
-    
+
     # disable today button if dateFrom isn't today
-    if _dateFrom is new Date().toISOString()[...10]
+    if _dateFrom is today.toISOString()[...10]
         $('#todayButton').addClass 'disabled'
         $('#livemap_on').removeClass 'disabled'
     else
