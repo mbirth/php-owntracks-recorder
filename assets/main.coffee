@@ -201,3 +201,15 @@ window.deleteMarker = (tid, i) ->
 window.showBoundingBox = (tid, i) ->
     console.log 'showBoundingBox: %o, %o', tid, i
     console.warn 'NOT YET IMPLEMENTED'
+
+window.updateTrackerIDs = ->
+    console.log 'updateTrackerIDs()'
+    $("#trackerID_selector option[value!='all']").each ->
+        $(this).remove()
+    trackerIds = window.mymap.markermgr.getTrackerIds()
+    console.log 'Got these tracker ids: %o', trackerIds
+    for value in trackerIds
+        $('#trackerID_selector').append $ '<option>',
+            value: value
+            text: value
+    $("#trackerID_selector").val window.trackerID    # TODO: find better way

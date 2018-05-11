@@ -68,57 +68,30 @@ class window.OwnMap
         L.control.layers(layers, overlays).addTo @mymap
         @fetchMarkers()
 
-    updateTrackerIDs: (_tid_markers) ->
-        console.log 'OwnMap::updateTrackerIDs(%o)', _tid_markers
-        try
-            $("#trackerID_selector option[value!='all']").each ->
-                $(this).remove()
-            if _tid_markers?
-                @trackerIDs = Object.keys _tid_markers
-                for own idx, value of @trackerIDs
-                    $('#trackerID_selector').append $ '<option>',
-                        value: value
-                        text: value
-                $("#trackerID_selector").val window.trackerID    # TODO: find better way
-            else
-                console.log 'updateTrackerIDs: no trackerID found in markers json'
-        catch err
-            console.error 'updateTrackerIDs: %o', err
-            alert err.message
-
     fetchMarkers: ->
         console.log 'OwnMap::fetchMarkers()'
         @markermgr.fetchMarkers window.dateFrom, window.dateTo, window.accuracy
             .done (data) =>
                 console.log '### data=%o', data
                 jsonMarkers = data
-                @updateTrackerIDs jsonMarkers
+                window.updateTrackerIDs()
                 if @drawMap jsonMarkers
                     $('#mapid').css 'filter', 'blur(0px)'
 
     eraseMap: ->
         console.log 'OwnMap::eraseMap()'
-        for own _index, _tid of @trackerIDs
+        for own _index, _tid of @my_markers
             if _tid of @polylines
                 @polylines[_tid].removeFrom @mymap
             for own _index2, _marker of @my_markers[_tid]
                 _marker.remove()
         return true
 
-    drawMap: (_tid_markers) ->
-        console.log 'OwnMap::drawMap(%o)', _tid_markers
+    drawMap: ->
+        console.log 'OwnMap::drawMap()'
+        tid_markers = @markermgr.getMarkers()
+        trackerIDs  = @markermgr.getTrackerIds()
         try
-            if not _tid_markers? and tid_markers?
-                _tid_markers = tid_markers
-                console.log 'drawMap: null param given but global markers available!'
-            else if _tid_markers?
-                tid_markers = _tid_markers
-                console.log 'drawMap: non null param given!'
-            else
-                console.error 'drawMap: null param given and global markers not available!'
-                alert 'No location markers collected for selected dates and accuracy!'
-                return false
-            
             console.log 'drawMap: tid_markers = %o', tid_markers
 
             # vars for map bounding
@@ -132,14 +105,15 @@ class window.OwnMap
 
             nb_markers = 0   # global markers counter
 
-            tid_markers = []   # markers collected from json
             @my_markers = {}
             my_latlngs = []
             @polylines = []
 
-            if @trackerIDs.length > 0
-                for tid, j in @trackerIDs
-                    markers = _tid_markers[tid]
+            if trackerIDs.length > 0
+                for tid, j in trackerIDs
+                    console.log 'Handling trackers: %o, %o', tid, j
+                    markers = tid_markers[tid]
+                    console.log 'Markers set is: %o', markers
                     my_latlngs[tid] = []
                     @my_markers[tid] = []
 

@@ -20,3 +20,12 @@ class window.MarkerMgr
                 @dateTo = dateToYMD
                 @accuracy = accuracy
                 return data
+
+    getTrackerIds: ->
+        return Object.keys @markers
+
+    getMarkers: ->
+        return @markers
+
+    addMarkersTo: (map) ->
+        pass
