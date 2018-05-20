@@ -144,6 +144,12 @@ window.initUI = ->
     updateDateNav()
 
     $('.input-daterange').on 'change', (e) ->
+        if $(e.target).is $('#dateFrom')
+            if $('#dateFrom').val() > $('#dateTo').val()
+                $('#dateTo').val $('#dateFrom').val()
+        else if $(e.target).is $('#dateTo')
+            if $('#dateTo').val() < $('#dateFrom').val()
+                $('#dateFrom').val $('#dateTo').val()
         return gotoDate $('#dateFrom').val(), $('#dateTo').val()
 
     # accuracy event handlers
