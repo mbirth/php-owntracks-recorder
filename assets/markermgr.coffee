@@ -27,5 +27,40 @@ class window.MarkerMgr
     getMarkers: ->
         return @markers
 
-    addMarkersTo: (map) ->
+    getMarkerBounds: ->
         pass
+
+    getMarkerTooltip: (tid, mid, marker) ->
+        trackerIDString = "<br/>TrackerID: #{tid} / #{mid}"
+        dateString = marker.dt
+        if marker.epoch != 0
+            newDate = new Date()
+            newDate.setTime marker.epoch * 1000
+            dateString = newDate.toLocaleString()
+        
+        accuracyString = "<br/>Accuracy: #{marker.accuracy} m"
+        headingString = if marker.heading? then "<br/>Heading: #{marker.heading}°" else ''
+        velocityString = if marker.velocity? then "<br/>Velocity: #{marker.velocity} km/h" else ''
+        locationString = ''
+        if marker.display_name?
+            locationString = "<br/>Location: <a href=\"#\" onclick=\"showBoundingBox('#{tid}', #{mid});\" title=\"Show location bounding box\">#{marker.display_name}</a>"
+        else
+            locationString = "<br/>Location: <span id=\"loc_#{tid}_#{mid}\"><a href=\"#\" onclick=\"geodecodeMarker('#{tid}', #{mid});\" title=\"Get location (geodecode)\">Get location</a></span>"
+        
+        removeString = "<br/><br/><a href=\"#\" onclick=\"deleteMarker('#{tid}', #{mid});\">Delete marker</a>"
+        
+        # prepare popup HTML code for marker
+        popupString = dateString + trackerIDString + accuracyString + headingString + velocityString + locationString + removeString
+        return popupString
+
+    addMarkersTo: (map) ->
+        console.log 'MarkerMgr::addMarkersTo(%o)', map
+        mapid = map.getContainer().id
+        for tid, tidmarkers of @markers
+            # TODO: Implement some way of filtering by tid
+            for i, tidmarker of tidmarkers
+                tooltip_txt = @getMarkerTooltip tid, i, tidmarker
+
+    removeMarkersFrom: (map) ->
+        console.log 'MarkerMgr::removeMarkersFrom(%o)', map
+        mapid = map.getContainer().id

@@ -95,6 +95,15 @@ class window.OwnMap
 
     drawMap: ->
         console.log 'OwnMap::drawMap()'
+        if @map_drawn
+            @markermgr.removeMarkersFrom @mymap
+
+        @markermgr.addMarkersTo @mymap
+
+        # TODO: Handle polyline
+        # TODO: Zoom to bounds
+
+        # LEGACY CODE:
         tid_markers = @markermgr.getMarkers()
         trackerIDs  = @markermgr.getTrackerIds()
         try
@@ -115,95 +124,77 @@ class window.OwnMap
             my_latlngs = []
             @polylines = []
 
-            if trackerIDs.length > 0
-                for tid, j in trackerIDs
-                    console.log 'Handling trackers: %o, %o', tid, j
-                    markers = tid_markers[tid]
-                    console.log 'Markers set is: %o', markers
-                    my_latlngs[tid] = []
-                    @my_markers[tid] = []
-
-                    if window.trackerID is 'all' or window.trackerID is tid
-                        trackerIDString = "<br/>TrackerID: #{tid}"
-                        if markers.length > 0
-                            for marker, i in markers
-                                nb_markers += 1
-                                dateString = marker.dt
-                                if marker.epoch != 0
-                                    newDate = new Date()
-                                    newDate.setTime marker.epoch * 1000
-                                    dateString = newDate.toLocaleString()
-                                
-                                accuracyString = "<br/>Accuracy: #{marker.accuracy} m"
-                                headingString = if marker.heading? then "<br/>Heading: #{marker.heading}°" else ''
-                                velocityString = if marker.velocity? then "<br/>Velocity: #{marker.velocity} km/h" else ''
-                                locationString = ""
-                                if marker.display_name?
-                                    locationString = "<br/>Location: <a href=\"#\" onclick=\"showBoundingBox('#{tid}', #{i});\" title=\"Show location bounding box\">#{marker.display_name}</a>"
-                                else
-                                    locationString = "<br/>Location: <span id=\"loc_#{tid}_#{i}\"><a href=\"#\" onclick=\"geodecodeMarker('#{tid}', #{i});\" title=\"Get location (geodecode)\">Get location</a></span>"
-                                
-                                removeString = "<br/><br/><a href=\"#\" onclick=\"deleteMarker('#{tid}', #{i});\">Delete marker</a>"
-                                
-                                # prepare popup HTML code for marker
-                                popupString = dateString + trackerIDString + accuracyString + headingString + velocityString + locationString + removeString
-                                    
-                                # create leaflet market object with custom icon based on tid index in array
-                                # first marker
-                                if i == 0
-                                    my_marker = L.marker( [markers[i].latitude, markers[i].longitude], {icon: @marker_start_icons[j]} ).bindPopup(popupString)
-                                # last marker
-                                else if i == markers.length-1
-                                    my_marker = L.marker( [markers[i].latitude, markers[i].longitude], {icon: @marker_finish_icons[j]} ).bindPopup(popupString)
-                                # all other markers
-                                else
-                                    my_marker = L.marker( [markers[i].latitude, markers[i].longitude], {icon: @marker_icons[j]} ).bindPopup(popupString)
-
-                                if max_lat < markers[i].latitude then max_lat = markers[i].latitude
-                                if min_lat > markers[i].latitude then min_lat = markers[i].latitude
-                                if max_lon < markers[i].longitude then max_lon = markers[i].longitude
-                                if min_lon > markers[i].longitude then min_lon = markers[i].longitude
-                                
-                                # add marker to map only if cookie 'show_markers' says to or if 1st or last marker
-                                if show_markers != '0' or i == 0 or i == markers.length-1
-                                    my_marker.addTo @mymap
-                                
-                                # collect all markers location to prepare drawing track, per trackerID
-                                my_latlngs[tid][i] = [markers[i].latitude, markers[i].longitude, i]
-                                
-                                
-                                # todo : onmouseover marker, display accuracy radius
-                                # if(markers[i].acc > 0){
-                                
-                                #if(i+1 == markers.length && markers[i].acc > 0){
-                                #        var circle = L.circle(my_latlngs[i], {
-                                #        opacity: 0.2,
-                                #        radius: markers[i].acc
-                                #    }).addTo(mymap);
-                                #}
-                                
-                                # array of all markers for display / hide markers + initial auto zoom scale
-                                my_marker.epoch = markers[i].epoch   # needed for geocoding/deleting
-                                @my_markers[tid][i] = my_marker
-
-                            # var polylines[tid] = L.polyline(my_latlngs[tid]).addTo(mymap);
-                            @polylines[tid] = L.hotline(my_latlngs[tid],
-                                min: 0
-                                max: markers.length
-                                palette:
-                                    0.0: 'green'
-                                    0.5: 'yellow'
-                                    1.0: 'red'
-                                weight: 4
-                                outlineColor: '#000000'
-                                outlineWidth: 0.5
-                            ).addTo @mymap
-                        else
-                            console.error 'drawMap: No location data for trackerID "%o" found!', window.trackerID
-                            alert "No location data for trackerID '#{window.trackerID}' found!"
-            else
+            if trackerIDs.length is 0
                 console.error 'drawMap: No location data found for any trackerID!'
                 alert 'No location data found for any trackerID!'
+
+            for tid, j in trackerIDs
+                console.log 'Handling trackers: %o, %o', tid, j
+                my_latlngs[tid] = []
+                @my_markers[tid] = []
+
+                if window.trackerID is 'all' or window.trackerID is tid
+                    markers = tid_markers[tid]
+                    console.log 'Markers set is: %o', markers
+                    if markers.length is 0
+                        console.error 'drawMap: No location data for trackerID "%o" found!', window.trackerID
+                        alert "No location data for trackerID '#{window.trackerID}' found!"
+
+                    for marker, i in markers
+                        nb_markers += 1
+                        # prepare popup HTML code for marker
+                        popupString = @markermgr.getMarkerTooltip tid, i, marker
+                            
+                        # create leaflet marker object with custom icon based on tid index in array
+                        if i == 0
+                            # first marker
+                            my_marker = L.marker( [markers[i].latitude, markers[i].longitude], {icon: @marker_start_icons[j]} ).bindPopup(popupString)
+                        else if i == markers.length-1
+                            # last marker
+                            my_marker = L.marker( [markers[i].latitude, markers[i].longitude], {icon: @marker_finish_icons[j]} ).bindPopup(popupString)
+                        else
+                            # all other markers
+                            my_marker = L.marker( [markers[i].latitude, markers[i].longitude], {icon: @marker_icons[j]} ).bindPopup(popupString)
+
+                        if max_lat < markers[i].latitude then max_lat = markers[i].latitude
+                        if min_lat > markers[i].latitude then min_lat = markers[i].latitude
+                        if max_lon < markers[i].longitude then max_lon = markers[i].longitude
+                        if min_lon > markers[i].longitude then min_lon = markers[i].longitude
+                        
+                        # add marker to map only if cookie 'show_markers' says to or if 1st or last marker
+                        if show_markers != '0' or i == 0 or i == markers.length-1
+                            my_marker.addTo @mymap
+                        
+                        # collect all markers location to prepare drawing track, per trackerID
+                        my_latlngs[tid][i] = [markers[i].latitude, markers[i].longitude, i]
+                        
+                        
+                        # todo : onmouseover marker, display accuracy radius
+                        # if(markers[i].acc > 0){
+                        
+                        #if(i+1 == markers.length && markers[i].acc > 0){
+                        #        var circle = L.circle(my_latlngs[i], {
+                        #        opacity: 0.2,
+                        #        radius: markers[i].acc
+                        #    }).addTo(mymap);
+                        #}
+                        
+                        # array of all markers for display / hide markers + initial auto zoom scale
+                        my_marker.epoch = markers[i].epoch   # needed for geocoding/deleting
+                        @my_markers[tid][i] = my_marker
+
+                    # var polylines[tid] = L.polyline(my_latlngs[tid]).addTo(mymap);
+                    @polylines[tid] = L.hotline(my_latlngs[tid],
+                        min: 0
+                        max: markers.length
+                        palette:
+                            0.0: 'green'
+                            0.5: 'yellow'
+                            1.0: 'red'
+                        weight: 4
+                        outlineColor: '#000000'
+                        outlineWidth: 0.5
+                    ).addTo @mymap
 
             # save default zoom scale
             @setDefaultZoom()
