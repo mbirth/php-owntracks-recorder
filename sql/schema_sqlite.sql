@@ -1,6 +1,7 @@
 PRAGMA journal_mode=WAL;
 
 CREATE TABLE "locations" (
+  "lid" INTEGER PRIMARY KEY AUTOINCREMENT,
   "dt" INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "accuracy" INTEGER,
   "altitude" INTEGER,

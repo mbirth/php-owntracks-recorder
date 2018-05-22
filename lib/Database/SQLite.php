@@ -10,6 +10,7 @@ class SQLite extends AbstractDatabase
     {
         $this->db = new \PDO('sqlite:' . $db);
         $this->prefix = '';
+        $this->execute('PRAGMA foreign_keys = ON;');
     }
 
     protected function query(string $sql, array $params = array()): array
