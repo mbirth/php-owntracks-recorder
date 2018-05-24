@@ -143,7 +143,7 @@ class window.OwnMap
                     for marker, i in markers
                         nb_markers += 1
                         # prepare popup HTML code for marker
-                        popupString = @markermgr.getMarkerTooltip tid, i, marker
+                        popupString = @markermgr.getMarkerTooltip i, marker
                             
                         # create leaflet marker object with custom icon based on tid index in array
                         if i == 0

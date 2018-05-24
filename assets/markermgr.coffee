@@ -30,8 +30,8 @@ class window.MarkerMgr
     getMarkerBounds: ->
         pass
 
-    getMarkerTooltip: (tid, mid, marker) ->
-        trackerIDString = "<br/>TrackerID: #{tid} / #{mid}"
+    getMarkerTooltip: (mid, marker) ->
+        trackerIDString = "<br/>TrackerID: #{marker.tracker_id} / #{mid}"
         dateString = marker.dt
         if marker.epoch != 0
             newDate = new Date()
@@ -43,11 +43,11 @@ class window.MarkerMgr
         velocityString = if marker.velocity? then "<br/>Velocity: #{marker.velocity} km/h" else ''
         locationString = ''
         if marker.display_name?
-            locationString = "<br/>Location: <a href=\"#\" onclick=\"showBoundingBox('#{tid}', #{mid});\" title=\"Show location bounding box\">#{marker.display_name}</a>"
+            locationString = "<br/>Location: <a href=\"#\" onclick=\"showBoundingBox('#{marker.tracker_id}', #{mid});\" title=\"Show location bounding box\">#{marker.display_name}</a>"
         else
-            locationString = "<br/>Location: <span id=\"loc_#{tid}_#{mid}\"><a href=\"#\" onclick=\"geodecodeMarker('#{tid}', #{mid});\" title=\"Get location (geodecode)\">Get location</a></span>"
+            locationString = "<br/>Location: <span id=\"loc_#{marker.tracker_id}_#{mid}\"><a href=\"#\" onclick=\"geodecodeMarker('#{marker.tracker_id}', #{mid});\" title=\"Get location (geodecode)\">Get location</a></span>"
         
-        removeString = "<br/><br/><a href=\"#\" onclick=\"deleteMarker('#{tid}', #{mid});\">Delete marker</a>"
+        removeString = "<br/><br/><a href=\"#\" onclick=\"deleteMarker('#{marker.tracker_id}', #{mid});\">Delete marker</a>"
         
         # prepare popup HTML code for marker
         popupString = dateString + trackerIDString + accuracyString + headingString + velocityString + locationString + removeString
@@ -59,7 +59,7 @@ class window.MarkerMgr
         for tid, tidmarkers of @markers
             # TODO: Implement some way of filtering by tid
             for i, tidmarker of tidmarkers
-                tooltip_txt = @getMarkerTooltip tid, i, tidmarker
+                tooltip_txt = @getMarkerTooltip i, tidmarker
 
     removeMarkersFrom: (map) ->
         console.log 'MarkerMgr::removeMarkersFrom(%o)', map
