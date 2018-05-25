@@ -86,10 +86,10 @@ class window.OwnMap
 
     eraseMap: ->
         console.log 'OwnMap::eraseMap()'
-        for own _index, _tid of @my_markers
+        for own _tid, markers of @my_markers
             if _tid of @polylines
                 @polylines[_tid].removeFrom @mymap
-            for own _index2, _marker of @my_markers[_tid]
+            for own _index2, _marker of markers
                 _marker.remove()
         return true
 
