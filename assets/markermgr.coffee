@@ -28,6 +28,7 @@ class window.MarkerMgr
         return Object.keys @markers
 
     getMarkers: ->
+        # TODO: Implement some sort of filtering here
         return @markers
 
     getMarkerBounds: ->
@@ -36,7 +37,7 @@ class window.MarkerMgr
         max_lon = -180
         min_lon = 180
 
-        for tid, tidmarkers of @markers
+        for tid, tidmarkers of @getMarkers()
             # TODO: Implement some way of filtering by tid
             for tidmarker, i in tidmarkers
                 if max_lat < tidmarker.latitude then max_lat = tidmarker.latitude
@@ -98,7 +99,7 @@ class window.MarkerMgr
         mapid = map.getContainer().id
         if not @markers_drawn[mapid]?
             @markers_drawn[mapid] = []
-        for tid, tidmarkers of @markers
+        for tid, tidmarkers of @getMarkers()
             # TODO: Implement some way of filtering by tid
             for tidmarker, i in tidmarkers
                 tooltip_txt = @getMarkerTooltip tidmarker
@@ -122,7 +123,7 @@ class window.MarkerMgr
         mapid = map.getContainer().id
         if not @lines_drawn[mapid]?
             @lines_drawn[mapid] = []
-        for tid, tidmarkers of @markers
+        for tid, tidmarkers of @getMarkers()
             # TODO: Implement some way of filtering by tid
             line_track = []
             for tidmarker, i in tidmarkers
