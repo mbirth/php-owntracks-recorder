@@ -163,6 +163,13 @@ window.initUI = ->
     $('#configCollapse').on 'hide.bs.collapse', (e) ->
         $('#configButton').addClass('btn-default').removeClass('btn-primary').removeClass('active')
 
+    show_markers = Cookies.get 'show_markers'
+    console.log 'initUI: show_markers = %o', show_markers
+
+    # set button state
+    if show_markers is '1'
+        $('#show_markers').removeClass('btn-default').addClass('btn-primary').addClass('active')
+
     # setup history popupstate event handler
     window.onpopstate = window.handlePopState
 

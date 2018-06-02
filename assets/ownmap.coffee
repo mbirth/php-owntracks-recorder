@@ -3,19 +3,12 @@ class window.OwnMap
         console.log 'OwnMap::constructor(%o)', markermgr
 
         @markermgr = markermgr
+        @map_drawn = false
+        @default_zoom = 15
+        @default_centre = [0, 0]
 
-        @my_markers = {}
-        @trackerIDs = []
         @live_view = false
-
-        show_markers = Cookies.get 'show_markers'
-        console.log 'initMap: show_markers = %o', show_markers
-
-        # set checkbox
-        if show_markers is '1'
-            # hideMarkers();
-            # $('#show_markers').prop('checked',false);
-            $('#show_markers').removeClass('btn-default').addClass('btn-primary').addClass('active')
+        @live_view_timer = false
 
         layers =
             'OpenStreetMap': L.tileLayer 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -95,23 +88,11 @@ class window.OwnMap
 
     showMarkers: ->
         console.log 'OwnMap::showMarkers()'
-        for own _index, _tid of @trackerIDs
-            if window.trackerID == _tid or window.trackerID == 'all'
-                for own _index2, _marker of @my_markers[_tid]
-                    # add marker to map except first & last (never removed)
-                    if _index2 != 0 or _index2 != @my_markers[_tid].length
-                        _marker.addTo @mymap
-        return true
+        # TODO: Use MarkerMgr (needs to be implemented there first)
 
     hideMarkers: ->
         console.log 'OwnMap::hideMarkers()'
-        for own _index, _tid of @trackerIDs
-            if window.trackerID == _tid or window.trackerID == 'all'
-                for own _index2, _marker of @my_markers[_tid]
-                    # remove marker except first & last
-                    if _index2 > 0 and _index2 < @my_markers[_tid].length-1
-                        _marker.remove()
-        return true
+        # TODO: Use MarkerMgr (needs to be implemented there first)
 
     resetZoom: ->
         console.log 'OwnMap::resetZoom()'

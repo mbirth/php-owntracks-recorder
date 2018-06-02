@@ -2,6 +2,7 @@ class window.MarkerMgr
     constructor: (rpcclient) ->
         console.log 'MarkerMgr::constructor(%o)', rpcclient
         @rpcclient = rpcclient
+        @show_markers = true
         @markers = {}
         @markers_old = {}
         @dateFrom = null
