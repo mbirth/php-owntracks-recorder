@@ -73,24 +73,24 @@ class AbstractDatabase
         return $markers;
     }
 
-    public function getMarkerLatLon(int $epoch)
+    public function getMarkerLatLon(int $location_id)
     {
-        $sql = 'SELECT latitude, longitude FROM ' . $this->prefix . 'locations WHERE epoch = ?';
-        $result = $this->query($sql, array($epoch));
+        $sql = 'SELECT latitude, longitude FROM ' . $this->prefix . 'locations WHERE lid = ?';
+        $result = $this->query($sql, array($location_id));
         return $result[0];
     }
 
-    public function deleteMarker(int $epoch)
+    public function deleteMarker(int $location_id)
     {
-        $sql = 'DELETE FROM ' . $this->prefix . 'locations WHERE epoch = ?';
-        $result = $this->execute($sql, array($epoch));
+        $sql = 'DELETE FROM ' . $this->prefix . 'locations WHERE lid = ?';
+        $result = $this->execute($sql, array($location_id));
         return $result;
     }
 
-    public function updateLocationData(int $epoch, float $latitude, float $longitude, string $location_name, int $place_id, int $osm_id)
+    public function updateLocationData(int $location_id, float $latitude, float $longitude, string $location_name, int $place_id, int $osm_id)
     {
-        $sql = 'UPDATE ' . $this->prefix . 'locations SET display_name = ?, place_id = ?, osm_id = ? WHERE epoch = ?';
-        $params = array($location_name, $place_id, $osm_id, $epoch);
+        $sql = 'UPDATE ' . $this->prefix . 'locations SET display_name = ?, place_id = ?, osm_id = ? WHERE lid = ?';
+        $params = array($location_name, $place_id, $osm_id, $location_id);
         $result = $this->execute($sql, $params);
         return $result;
     }

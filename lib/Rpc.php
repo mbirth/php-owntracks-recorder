@@ -70,14 +70,14 @@ class Rpc
 
     public function deleteMarker()
     {
-        if (!array_key_exists('epoch', $_REQUEST)) {
+        if (!array_key_exists('lid', $_REQUEST)) {
             http_response_code(204);
             return array(
                 'status' => false,
-                'error' => 'No epoch provided for marker removal',
+                'error' => 'No location_id provided for marker removal',
             );
         }
-        $result = $this->sql->deleteMarker($_REQUEST['epoch']);
+        $result = $this->sql->deleteMarker($_REQUEST['lid']);
         if ($result === false) {
             http_response_code(500);
             return array(
@@ -95,15 +95,15 @@ class Rpc
     {
         global $_config;
 
-        if (!array_key_exists('epoch', $_REQUEST)) {
+        if (!array_key_exists('lid', $_REQUEST)) {
             http_response_code(204);
             return array(
                 'status' => false,
-                'error' => 'No epoch provided for marker removal',
+                'error' => 'No location_id provided for marker removal',
             );
         }
         // GET MARKER'S LAT & LONG DATA
-        $marker = $this->sql->getMarkerLatLon($_REQUEST['epoch']);
+        $marker = $this->sql->getMarkerLatLon($_REQUEST['lid']);
 
         if ($marker === false) {
             http_response_code(500);
@@ -129,8 +129,8 @@ class Rpc
             $location = @json_encode($geo_decode);
         }
         
-        //UPDATE MARKER WITH GEODECODED LOCATION
-        $result = $this->sql->updateLocationData((int)$_REQUEST['epoch'], (float)$latitude, (float)$longitude, $location, $place_id, $osm_id);
+        // UPDATE MARKER WITH GEODECODED LOCATION
+        $result = $this->sql->updateLocationData((int)$_REQUEST['lid'], (float)$latitude, (float)$longitude, $location, $place_id, $osm_id);
         
         if ($result === false) {
             http_response_code(500);

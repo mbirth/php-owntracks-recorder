@@ -11,18 +11,6 @@ class window.OwnMap
         show_markers = Cookies.get 'show_markers'
         console.log 'initMap: show_markers = %o', show_markers
 
-        @marker_start_icons = {}
-        @marker_finish_icons = {}
-        @marker_icons = {}
-
-        colours = ['blue', 'red', 'orange', 'green', 'purple', 'cadetblue', 'darkred', 'darkgreen', 'darkpurple']
-        for fg, i in colours
-            bg1 = if fg is 'green' then 'darkgreen' else 'green'
-            bg2 = if fg is 'red' then 'darkred' else 'red'
-            @marker_start_icons[i] = L.AwesomeMarkers.icon({icon: 'play', prefix: 'fa', markerColor: fg, iconColor: bg1 })
-            @marker_finish_icons[i] = L.AwesomeMarkers.icon({icon: 'stop', prefix: 'fa', markerColor: fg, iconColor: bg2 })
-            @marker_icons[i] = L.AwesomeMarkers.icon({icon: 'user', prefix: 'fa', markerColor: fg })
-
         # set checkbox
         if show_markers is '1'
             # hideMarkers();
@@ -78,139 +66,25 @@ class window.OwnMap
         console.log 'OwnMap::fetchMarkers()'
         @markermgr.fetchMarkers window.dateFrom, window.dateTo, window.accuracy
             .done (data) =>
-                console.log '### data=%o', data
-                jsonMarkers = data
                 window.updateTrackerIDs()
-                if @drawMap jsonMarkers
+                if @drawMap()
                     $('#mapid').css 'filter', 'blur(0px)'
-
-    eraseMap: ->
-        console.log 'OwnMap::eraseMap()'
-        for own _tid, markers of @my_markers
-            if _tid of @polylines
-                @polylines[_tid].removeFrom @mymap
-            for own _index2, _marker of markers
-                _marker.remove()
-        return true
 
     drawMap: ->
         console.log 'OwnMap::drawMap()'
         if @map_drawn
             @markermgr.removeMarkersFrom @mymap
+            @markermgr.removeLinesFrom @mymap
+            @map_drawn = false
 
         @markermgr.addMarkersTo @mymap
+        @markermgr.addLinesTo @mymap
 
-        # TODO: Handle polyline
-        # TODO: Zoom to bounds
-
-        # LEGACY CODE:
-        tid_markers = @markermgr.getMarkers()
-        trackerIDs  = @markermgr.getTrackerIds()
-        try
-            console.log 'drawMap: tid_markers = %o', tid_markers
-
-            # vars for map bounding
-            max_lat = -1000
-            min_lat = 1000
-            max_lon = -1000
-            min_lon = 1000
-
-            if @map_drawn
-                @eraseMap()
-
-            nb_markers = 0   # global markers counter
-
-            @my_markers = {}
-            my_latlngs = []
-            @polylines = []
-
-            if trackerIDs.length is 0
-                console.error 'drawMap: No location data found for any trackerID!'
-                alert 'No location data found for any trackerID!'
-
-            for tid, j in trackerIDs
-                console.log 'Handling trackers: %o, %o', tid, j
-                my_latlngs[tid] = []
-                @my_markers[tid] = []
-
-                if window.trackerID is 'all' or window.trackerID is tid
-                    markers = tid_markers[tid]
-                    console.log 'Markers set is: %o', markers
-                    if markers.length is 0
-                        console.error 'drawMap: No location data for trackerID "%o" found!', window.trackerID
-                        alert "No location data for trackerID '#{window.trackerID}' found!"
-
-                    for marker, i in markers
-                        nb_markers += 1
-                        # prepare popup HTML code for marker
-                        popupString = @markermgr.getMarkerTooltip i, marker
-                            
-                        # create leaflet marker object with custom icon based on tid index in array
-                        if i == 0
-                            # first marker
-                            my_marker = L.marker( [markers[i].latitude, markers[i].longitude], {icon: @marker_start_icons[j]} ).bindPopup(popupString)
-                        else if i == markers.length-1
-                            # last marker
-                            my_marker = L.marker( [markers[i].latitude, markers[i].longitude], {icon: @marker_finish_icons[j]} ).bindPopup(popupString)
-                        else
-                            # all other markers
-                            my_marker = L.marker( [markers[i].latitude, markers[i].longitude], {icon: @marker_icons[j]} ).bindPopup(popupString)
-
-                        if max_lat < markers[i].latitude then max_lat = markers[i].latitude
-                        if min_lat > markers[i].latitude then min_lat = markers[i].latitude
-                        if max_lon < markers[i].longitude then max_lon = markers[i].longitude
-                        if min_lon > markers[i].longitude then min_lon = markers[i].longitude
-                        
-                        # add marker to map only if cookie 'show_markers' says to or if 1st or last marker
-                        if show_markers != '0' or i == 0 or i == markers.length-1
-                            my_marker.addTo @mymap
-                        
-                        # collect all markers location to prepare drawing track, per trackerID
-                        my_latlngs[tid][i] = [markers[i].latitude, markers[i].longitude, i]
-                        
-                        
-                        # todo : onmouseover marker, display accuracy radius
-                        # if(markers[i].acc > 0){
-                        
-                        #if(i+1 == markers.length && markers[i].acc > 0){
-                        #        var circle = L.circle(my_latlngs[i], {
-                        #        opacity: 0.2,
-                        #        radius: markers[i].acc
-                        #    }).addTo(mymap);
-                        #}
-                        
-                        # array of all markers for display / hide markers + initial auto zoom scale
-                        my_marker.epoch = markers[i].epoch   # needed for geocoding/deleting
-                        @my_markers[tid][i] = my_marker
-
-                    # var polylines[tid] = L.polyline(my_latlngs[tid]).addTo(mymap);
-                    @polylines[tid] = L.hotline(my_latlngs[tid],
-                        min: 0
-                        max: markers.length
-                        palette:
-                            0.0: 'green'
-                            0.5: 'yellow'
-                            1.0: 'red'
-                        weight: 4
-                        outlineColor: '#000000'
-                        outlineWidth: 0.5
-                    ).addTo @mymap
-
-            # save default zoom scale
-            @setDefaultZoom()
-            # auto zoom scale based on all markers location
-            @mymap.fitBounds [
-                [min_lat, min_lon],
-                [max_lat, max_lon]
-            ]
-            # set map drawn flag
-            @map_drawn = true
-            return true
-        catch err
-            console.error 'drawMap: %o', err
-            alert err.message
-            @map_drawn = false
-            return false
+        # save default zoom scale
+        @setDefaultZoom()
+        # auto zoom scale based on all markers location
+        @mymap.fitBounds @markermgr.getMarkerBounds()
+        @map_drawn = true
 
     setDefaultZoom: ->
         console.log 'OwnMap::setDefaultZoom()'
@@ -256,13 +130,13 @@ class window.OwnMap
             clearTimeout @live_view_timer
         return @live_view
 
-    geodecodeMarker: (tid, i) ->
-        console.log 'OwnMap::geodecodeMarker(%o, %o)', tid, i
+    geodecodeMarker: (lid) ->
+        console.log 'OwnMap::geodecodeMarker(%o)', lid
         # ajax call to remove marker from backend
         $.ajax 
             url: 'rpc.php'
             data:
-                'epoch': @my_markers[tid][i].epoch
+                'lid': lid
                 'action': 'geoDecode'
             type: 'get'
             dataType: 'json'
@@ -271,20 +145,20 @@ class window.OwnMap
                     console.log 'geodecodeMarker: Status=%o, Data=%o', status, data
                     
                     # update marker data
-                    $("#loc_#{tid}_#{i}").html "<a href='javascript:showBoundingBox(#{tid}, #{i});' title='Show location bounding box'>#{data.location}</a>"
+                    $("#loc_#{lid}").html "<a href='javascript:showBoundingBox(#{lid});' title='Show location bounding box'>#{data.location}</a>"
                 else
                     console.error 'geodecodeMarker: Status=%o, Data=%o', status, data
             error: (xhr, desc, err) ->
                 console.error 'geodecodeMarker: XHR=%o, Error=%o, Details=%o', xhr, err, desc
 
-    deleteMarker: (tid, i) ->
-        console.log 'OwnMap::deleteMarker(%o, %o)', tid, i
+    deleteMarker: (lid) ->
+        console.log 'OwnMap::deleteMarker(%o)', lid
 
         # ajax call to remove marker from backend
         $.ajax
             url: 'rpc.php'
             data:
-                'epoch': @my_markers[tid][i].epoch
+                'lid': lid
                 'action': 'deleteMarker'
             type: 'get'
             dataType: 'json'
