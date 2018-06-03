@@ -10,6 +10,7 @@ class window.MarkerMgr
         @accuracy = null
         @markers_drawn = {}
         @lines_drawn = {}
+        @filter_tids = []
 
     fetchMarkers: (dateFromYMD, dateToYMD, accuracy) ->
         console.log 'MarkerMgr::fetchMarkers(%o, %o, %o)', dateFromYMD, dateToYMD, accuracy
@@ -28,8 +29,19 @@ class window.MarkerMgr
         return Object.keys @markers
 
     getMarkers: ->
-        # TODO: Implement some sort of filtering here
-        return @markers
+        console.log 'MarkerMgr::getMarkers()'
+        console.log 'Active filter is: %o', @filter_tids
+        result = {}
+        for tid, tidmarkers of @markers
+            if @filter_tids.length is 0 or tid in @filter_tids
+                result[tid] = tidmarkers
+        return result
+
+    setFilter: (new_filter) ->
+        if new_filter?
+            @filter_tids = new_filter
+        else
+            @filter_tids = []
 
     getMarkerBounds: ->
         max_lat = -90
