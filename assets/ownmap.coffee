@@ -88,11 +88,13 @@ class window.OwnMap
 
     showMarkers: ->
         console.log 'OwnMap::showMarkers()'
-        # TODO: Use MarkerMgr (needs to be implemented there first)
+        @markermgr.startstop_only = false
+        @drawMap()
 
     hideMarkers: ->
         console.log 'OwnMap::hideMarkers()'
-        # TODO: Use MarkerMgr (needs to be implemented there first)
+        @markermgr.startstop_only = true
+        @drawMap()
 
     resetZoom: ->
         console.log 'OwnMap::resetZoom()'

@@ -2,7 +2,7 @@ class window.MarkerMgr
     constructor: (rpcclient) ->
         console.log 'MarkerMgr::constructor(%o)', rpcclient
         @rpcclient = rpcclient
-        @show_markers = true
+        @startstop_only = false
         @markers = {}
         @markers_old = {}
         @dateFrom = null
@@ -105,6 +105,8 @@ class window.MarkerMgr
                 tooltip_txt = @getMarkerTooltip tidmarker
                 icon_is_first = i is 0
                 icon_is_last = i+1 is tidmarkers.length
+                if @startstop_only and not (icon_is_first or icon_is_last)
+                    continue
                 icon = @getMarkerIcon tid, icon_is_first, icon_is_last
                 marker = L.marker [tidmarker.latitude, tidmarker.longitude], {icon: icon}
                 .bindPopup tooltip_txt
