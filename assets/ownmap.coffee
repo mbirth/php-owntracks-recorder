@@ -3,6 +3,7 @@ class window.OwnMap
         console.log 'OwnMap::constructor(%o)', markermgr
 
         @markermgr = markermgr
+        @markermgr.startstop_only = Cookies.get('show_markers') is '0'
         @map_drawn = false
         @default_zoom = 15
         @default_centre = [0, 0]
@@ -89,11 +90,13 @@ class window.OwnMap
     showMarkers: ->
         console.log 'OwnMap::showMarkers()'
         @markermgr.startstop_only = false
+        Cookies.set 'show_markers', 1, { expires: 365 }
         @drawMap()
 
     hideMarkers: ->
         console.log 'OwnMap::hideMarkers()'
         @markermgr.startstop_only = true
+        Cookies.set 'show_markers', 0, { expires: 365 }
         @drawMap()
 
     resetZoom: ->

@@ -163,10 +163,9 @@ window.initUI = ->
     $('#configCollapse').on 'hide.bs.collapse', (e) ->
         $('#configButton').addClass('btn-default').removeClass('btn-primary').removeClass('active')
 
-    show_markers = Cookies.get 'show_markers'
-    console.log 'initUI: show_markers = %o', show_markers
-
     # set button state
+    show_markers = Cookies.get 'show_markers'
+    console.log 'show_markers cookie value is: %o', show_markers
     if show_markers is '1'
         $('#show_markers').removeClass('btn-default').addClass('btn-primary').addClass('active')
 
@@ -178,14 +177,10 @@ window.showHideMarkers = ->
     # $('#show_markers').change(function() {
     if $('#show_markers').hasClass 'btn-default'
         window.mymap.showMarkers()
-        Cookies.set 'show_markers', 1, { expires: 365 }
-        window.show_markers = 1
         $('#show_markers').removeClass('btn-default').addClass('btn-primary').addClass('active')
         return true
     else
         window.mymap.hideMarkers()
-        Cookies.set 'show_markers', 0, { expires: 365 }
-        window.show_markers = 0
         $('#show_markers').removeClass('btn-primary').removeClass('active').addClass('btn-default')
         return true
 
