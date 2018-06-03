@@ -9,6 +9,14 @@ window.goPrevious = ->
 window.goNext = ->
     window.gotoDate window.dateNextFrom, window.dateNextTo
 
+getToday = ->
+    today = new Date
+    today.setHours 0
+    today.setMinutes 0
+    today.setSeconds 0
+    today = new Date today.getTime() - today.getTimezoneOffset() * 60000
+    return today
+
 window.updateDateNav = (_dateFrom, _dateTo) ->
     console.log 'updateDateNav: %o, %o', _dateFrom, _dateTo
 
@@ -18,11 +26,7 @@ window.updateDateNav = (_dateFrom, _dateTo) ->
     # Prepare for calculations
     objFrom = new Date _dateFrom
     objTo   = new Date _dateTo
-    today   = new Date
-    today.setHours 0
-    today.setMinutes 0
-    today.setSeconds 0
-    today   = new Date today.getTime() - today.getTimezoneOffset() * 60000
+    today   = getToday()
 
     span = objTo.getTime() - objFrom.getTime()   # milliseconds
 
@@ -65,7 +69,7 @@ window.updateDateNav = (_dateFrom, _dateTo) ->
 window.gotoDate = (_dateFrom, _dateTo, pushState) ->
     console.log 'gotoDate: %o, %o, %o', _dateFrom, _dateTo, pushState
 
-    today = new Date().toISOString()[...10]
+    today = getToday().toISOString()[...10]
     _dateFrom = _dateFrom ? today
     _dateTo = _dateTo ? today
     pushState = pushState ? true
