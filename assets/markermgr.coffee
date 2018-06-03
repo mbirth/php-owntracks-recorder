@@ -148,7 +148,7 @@ class window.MarkerMgr
                 max: tidmarkers.length
                 palette:
                     0.00: 'red'
-                    0.17: 'orange'
+                    0.17: 'gold'
                     0.33: 'yellow'
                     0.50: 'lime'
                     0.67: 'deepskyblue'
