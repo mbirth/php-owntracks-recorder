@@ -46,6 +46,7 @@ if ($data['_type'] == 'location' || $_REQUEST['debug']) {
     $velocity = null;
     $pressure = null;
     $connection = null;
+    $topic = null;
 
     //http://owntracks.org/booklet/tech/json/
     if (array_key_exists('acc', $data)) $accuracy = intval($data['acc']);
@@ -64,7 +65,8 @@ if ($data['_type'] == 'location' || $_REQUEST['debug']) {
     if (array_key_exists('vel', $data)) $velocity = intval($data['vel']);
     if (array_key_exists('p', $data)) $pressure = floatval($data['p']);
     if (array_key_exists('conn', $data)) $connection = strval($data['conn']);
-    
+    if (array_key_exists('topic', $data)) $connection = strval($data['topic']);
+
     //record only if same data found at same epoch / tracker_id
     if (!$sql->isEpochExisting($tracker_id, $epoch)) {
 
@@ -84,9 +86,10 @@ if ($data['_type'] == 'location' || $_REQUEST['debug']) {
             $vertical_accuracy,
             $velocity,
             $pressure,
-            $connection
+            $connection,
+            $topic
         );
-            
+
         if ($result) {
             http_response_code(200);
             _log('Insert OK');
