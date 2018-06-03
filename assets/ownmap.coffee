@@ -58,6 +58,27 @@ class window.OwnMap
             layers: [layers['OpenStreetMap']]
 
         L.control.layers(layers, overlays).addTo @mymap
+
+        btn_showhide = L.easyButton
+            states: [{
+                stateName: 'show-markers'
+                icon: 'fa-map-marker-alt'
+                title: 'Show Markers'
+                onClick: (btn, map) =>
+                    @showMarkers()
+                    btn.state 'hide-markers'
+                }, {
+                stateName: 'hide-markers'
+                icon: 'fa-map-marker-alt'
+                title: 'Hide Markers'
+                onClick: (btn, map) =>
+                    @hideMarkers()
+                    btn.state 'show-markers'
+            }]
+        if not @markermgr.startstop_only
+            btn_showhide.state 'hide-markers'
+        btn_showhide.addTo @mymap
+
         @fetchMarkers()
 
     fetchMarkers: ->

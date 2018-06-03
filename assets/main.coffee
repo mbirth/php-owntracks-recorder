@@ -154,26 +154,8 @@ window.initUI = ->
     $('#configCollapse').on 'hide.bs.collapse', (e) ->
         $('#configButton').addClass('btn-default').removeClass('btn-primary').removeClass('active')
 
-    # set button state
-    show_markers = Cookies.get 'show_markers'
-    console.log 'show_markers cookie value is: %o', show_markers
-    if show_markers is '1'
-        $('#show_markers').removeClass('btn-default').addClass('btn-primary').addClass('active')
-
     # setup history popupstate event handler
     window.onpopstate = window.handlePopState
-
-window.showHideMarkers = ->
-    console.log 'showHideMarkers'
-    # $('#show_markers').change(function() {
-    if $('#show_markers').hasClass 'btn-default'
-        window.mymap.showMarkers()
-        $('#show_markers').removeClass('btn-default').addClass('btn-primary').addClass('active')
-        return true
-    else
-        window.mymap.hideMarkers()
-        $('#show_markers').removeClass('btn-primary').removeClass('active').addClass('btn-default')
-        return true
 
 window.resetZoom = ->
     console.log 'resetZoom'

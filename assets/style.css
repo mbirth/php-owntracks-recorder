@@ -11,3 +11,7 @@ body {
   cursor: default;
   opacity: 0.5;
 }
+
+button.hide-markers-active {
+  color: #007bff !important;
+}
