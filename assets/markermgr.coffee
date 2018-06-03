@@ -60,7 +60,7 @@ class window.MarkerMgr
         return [[min_lat, min_lon], [max_lat, max_lon]]
 
     getMarkerTooltip: (marker) ->
-        console.log 'MarkerMgr::getMarkerTooltip(%o)', marker
+        #console.log 'MarkerMgr::getMarkerTooltip(%o)', marker
         trackerIDString = "<br/>TrackerID: #{marker.tracker_id} / #{marker.lid}"
         dateString = marker.dt
         if marker.epoch != 0
@@ -147,9 +147,13 @@ class window.MarkerMgr
                 min: 0
                 max: tidmarkers.length
                 palette:
-                    0.0: 'green'
-                    0.5: 'yellow'
-                    1.0: 'red'
+                    0.00: 'red'
+                    0.17: 'orange'
+                    0.33: 'yellow'
+                    0.50: 'lime'
+                    0.67: 'deepskyblue'
+                    0.83: 'indigo'
+                    1.00: 'violet'
                 weight: 4
                 outlineColor: '#000000'
                 outlineWidth: 0.5
