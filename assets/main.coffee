@@ -157,11 +157,6 @@ window.initUI = ->
     # setup history popupstate event handler
     window.onpopstate = window.handlePopState
 
-window.resetZoom = ->
-    console.log 'resetZoom'
-    window.mymap.resetZoom()
-    return false
-
 window.setLiveMap = ->
     console.log 'setLiveMap'
     if window.mymap.toggleLiveView()

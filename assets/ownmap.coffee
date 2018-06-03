@@ -59,6 +59,11 @@ class window.OwnMap
 
         L.control.layers(layers, overlays).addTo @mymap
 
+        L.easyButton 'fa-map', (btn, map) =>
+            @resetZoom()
+        , 'Reset Zoom'
+        .addTo @mymap
+
         btn_showhide = L.easyButton
             states: [{
                 stateName: 'show-markers'
