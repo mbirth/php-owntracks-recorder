@@ -4,6 +4,10 @@ class window.OwnMap
 
         @markermgr = markermgr
         @markermgr.startstop_only = Cookies.get('show_markers') is '0'
+        selected_tid = Cookies.get 'trackerID'
+        if selected_tid isnt ''
+            @markermgr.setFilter [selected_tid]
+
         @map_drawn = false
         @default_zoom = 15
         @default_centre = [0, 0]
@@ -86,6 +90,15 @@ class window.OwnMap
             @default_zoom = @mymap.getZoom()
             @default_centre = @mymap.getCenter()
         , 2000
+
+    setMarkerFilter: (tid) ->
+        console.log 'OwnMap::setMarkerFilter(%o)', tid
+        Cookies.set 'trackerID', tid
+        if tid isnt ''
+            @markermgr.setFilter [tid]
+        else
+            @markermgr.setFilter()
+        @drawMap()
 
     showMarkers: ->
         console.log 'OwnMap::showMarkers()'

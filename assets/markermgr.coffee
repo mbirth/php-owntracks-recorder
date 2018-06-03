@@ -38,6 +38,7 @@ class window.MarkerMgr
         return result
 
     setFilter: (new_filter) ->
+        console.log 'MarkerMgr::setFilter(%o)', new_filter
         if new_filter?
             @filter_tids = new_filter
         else

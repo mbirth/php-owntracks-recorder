@@ -106,17 +106,8 @@ window.gotoAccuracy = ->
 
 window.changeTrackerID = ->
     console.log 'changeTrackerID'
-    
-    _trackerID = $('#trackerID_selector').val()
-    
-    if _trackerID != window.trackerID
-        Cookies.set 'trackerID', _trackerID
-        console.log 'changeTrackerID: trackerID cookie = %o', Cookies.get 'trackerID'
-        
-        window.trackerID = _trackerID
-        window.mymap.drawMap()
-    else
-        $('#configCollapse').collapse 'hide'
+    tid = $('#trackerID_selector').val()
+    window.mymap.setMarkerFilter tid
     return false
 
 window.initUI = ->
@@ -212,7 +203,7 @@ window.showBoundingBox = (lid) ->
 
 window.updateTrackerIDs = ->
     console.log 'updateTrackerIDs()'
-    $("#trackerID_selector option[value!='all']").each ->
+    $("#trackerID_selector option[value!='']").each ->
         $(this).remove()
     trackerIds = window.mymap.markermgr.getTrackerIds()
     console.log 'Got these tracker ids: %o', trackerIds
