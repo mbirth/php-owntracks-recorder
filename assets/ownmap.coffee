@@ -86,6 +86,13 @@ class window.OwnMap
 
         @fetchMarkers()
 
+    setLayerOpacity: (opacity) ->
+        # https://gis.stackexchange.com/questions/122219/get-all-tilelayers-from-l-map-object-in-leaflet
+        @mymap.eachLayer (layer) =>
+            if layer instanceof L.TileLayer
+                layer.options.opacity = opacity
+                layer.redraw()
+
     fetchMarkers: ->
         console.log 'OwnMap::fetchMarkers()'
         @markermgr.fetchMarkers window.dateFrom, window.dateTo, window.accuracy
