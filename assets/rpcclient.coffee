@@ -8,8 +8,8 @@ class window.RpcClient
         console.log 'RpcClient::getMarkers(%o, %o, %o)', dateFromYMD, dateToYMD, accuracy
         params =
             'action': 'getMarkers'
-            'dateFrom': dateFromYMD
-            'dateTo': dateToYMD
+            'dateFrom': dateFromYMD + 'T00:00:00'
+            'dateTo': dateToYMD + 'T23:59:59'
             'accuracy': accuracy
             #'trackerID' : trackerID
             #'epoc': time()

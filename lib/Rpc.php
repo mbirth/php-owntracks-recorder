@@ -31,11 +31,11 @@ class Rpc
         global $_config;
 
         if (!array_key_exists('dateFrom', $_GET)) {
-            $_GET['dateFrom'] = date('Y-m-d');
+            $_GET['dateFrom'] = date('Y-m-d') . 'T00:00:00';
         }
     
         if (!array_key_exists('dateTo', $_GET)) {
-            $_GET['dateTo'] = date('Y-m-d');
+            $_GET['dateTo'] = date('Y-m-d') . 'T23:59:59';
         }
     
         if (array_key_exists('accuracy', $_GET) && $_GET['accuracy'] > 0) {
@@ -44,13 +44,8 @@ class Rpc
             $accuracy = $_config['default_accuracy'];
         }
     
-        $time_from = strptime($_GET['dateFrom'], '%Y-%m-%d');
-        $time_from = mktime(0, 0, 0, $time_from['tm_mon']+1, $time_from['tm_mday'], $time_from['tm_year']+1900);
-    
-    
-        $time_to = strptime($_GET['dateTo'], '%Y-%m-%d');
-        $time_to = mktime(23, 59, 59, $time_to['tm_mon']+1, $time_to['tm_mday'], $time_to['tm_year']+1900);
-        //$time_to = strtotime('+1 day', $time_to);
+        $time_from = strtotime($_GET['dateFrom']);
+        $time_to = strtotime($_GET['dateTo']);
     
         $markers = $this->sql->getMarkers($time_from, $time_to, $accuracy);
 
