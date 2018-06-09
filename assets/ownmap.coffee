@@ -5,7 +5,8 @@ class window.OwnMap
         @markermgr = markermgr
         @markermgr.startstop_only = Cookies.get('show_markers') is '0'
         selected_tid = Cookies.get 'trackerID'
-        if selected_tid isnt ''
+        if selected_tid? and selected_tid isnt ''
+            console.log 'Setting marker filter to: %o', selected_tid
             @markermgr.setFilter [selected_tid]
 
         @map_drawn = false
