@@ -25,6 +25,9 @@ class window.OwnMap
                 subdomains: 'abc'
                 detectRetina: true
                 attribution: '© <a href="https://www.openstreetmap.de/faq.html#lizenz">OpenStreetMap</a>'
+            'MapSurfer': L.tileLayer 'https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}',
+                detectRetina: true
+                attribution: '<a href="http://korona.geog.uni-heidelberg.de/contact.html">GIScience Heidelberg</a>'
             'OpenTopoMap': L.tileLayer 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
                 subdomains: 'abc'
                 detectRetina: true
