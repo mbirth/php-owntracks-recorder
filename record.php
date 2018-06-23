@@ -18,18 +18,18 @@ $payload = file_get_contents('php://input');
 _log('Payload = ' . $payload);
 $data = @json_decode($payload, true);
 
+if ($_config['sql_type'] == 'mysql') {
+    $sql = new MySql($_config['sql_db'], $_config['sql_host'], $_config['sql_user'], $_config['sql_pass'], $_config['sql_prefix']);
+} elseif ($_config['sql_type'] == 'sqlite') {
+    $sql = new SQLite($_config['sql_db']);
+} else {
+    die('Invalid database type: ' . $_config['sql_type']);
+}
+
 header('Content-type: application/json');
 
 $response_msg = null;
-if ($data['_type'] == 'location' || $_REQUEST['debug']) {
-    if ($_config['sql_type'] == 'mysql') {
-        $sql = new MySql($_config['sql_db'], $_config['sql_host'], $_config['sql_user'], $_config['sql_pass'], $_config['sql_prefix']);
-    } elseif ($_config['sql_type'] == 'sqlite') {
-        $sql = new SQLite($_config['sql_db']);
-    } else {
-        die('Invalid database type: ' . $_config['sql_type']);
-    }
-
+if ($data['_type'] == 'location' || in_array('debug', $_REQUEST)) {
     $accuracy = null;
     $altitude = null;
     $battery_level = null;

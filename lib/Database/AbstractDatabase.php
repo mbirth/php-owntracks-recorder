@@ -96,10 +96,11 @@ class AbstractDatabase
         return $result;
     }
 
-    public function getAllLatestMarkers()
+    public function getAllLatestMarkers(int $max_age = 86400)
     {
-        $sql = 'SELECT * from locations l1 INNER JOIN (SELECT tracker_id, MAX(epoch) AS epoch FROM locations GROUP BY tracker_id) l2 ON l1.tracker_id=l2.tracker_id AND l1.epoch=l2.epoch';
-        $result = $this->query($sql);
+        $min_epoch = time() - $max_age;
+        $sql = 'SELECT * from locations l1 INNER JOIN (SELECT tracker_id, MAX(epoch) AS epoch FROM locations GROUP BY tracker_id) l2 ON l1.tracker_id=l2.tracker_id AND l1.epoch=l2.epoch WHERE l1.epoch >= ?';
+        $result = $this->query($sql, array($min_epoch));
         return $result;
     }
 }
