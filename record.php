@@ -7,6 +7,7 @@ require_once 'vendor/autoload.php';
 
 use \OwntracksRecorder\Database\MySql;
 use \OwntracksRecorder\Database\SQLite;
+use \OwntracksRecorder\RecordType\Location;
 
 function _log($msg)
 {
@@ -30,65 +31,13 @@ header('Content-type: application/json');
 
 $response_msg = null;
 if ($data['_type'] == 'location' || in_array('debug', $_REQUEST)) {
-    $accuracy = null;
-    $altitude = null;
-    $battery_level = null;
-    $heading = null;
-    $description = null;
-    $event = null;
-    $latitude = null;
-    $longitude = null;
-    $radius = null;
-    $trig = null;
-    $tracker_id = null;
-    $epoch = null;
-    $vertical_accuracy = null;
-    $velocity = null;
-    $pressure = null;
-    $connection = null;
-    $topic = null;
 
-    //http://owntracks.org/booklet/tech/json/
-    if (array_key_exists('acc', $data)) $accuracy = intval($data['acc']);
-    if (array_key_exists('alt', $data)) $altitude = intval($data['alt']);
-    if (array_key_exists('batt', $data)) $battery_level = intval($data['batt']);
-    if (array_key_exists('cog', $data)) $heading = intval($data['cog']);
-    if (array_key_exists('desc', $data)) $description = strval($data['desc']);
-    if (array_key_exists('event', $data)) $event = strval($data['event']);
-    if (array_key_exists('lat', $data)) $latitude = floatval($data['lat']);
-    if (array_key_exists('lon', $data)) $longitude = floatval($data['lon']);
-    if (array_key_exists('rad', $data)) $radius = intval($data['rad']);
-    if (array_key_exists('t', $data)) $trig = strval($data['t']);
-    if (array_key_exists('tid', $data)) $tracker_id = strval($data['tid']);
-    if (array_key_exists('tst', $data)) $epoch = intval($data['tst']);
-    if (array_key_exists('vac', $data)) $vertical_accuracy = intval($data['vac']);
-    if (array_key_exists('vel', $data)) $velocity = intval($data['vel']);
-    if (array_key_exists('p', $data)) $pressure = floatval($data['p']);
-    if (array_key_exists('conn', $data)) $connection = strval($data['conn']);
-    if (array_key_exists('topic', $data)) $topic = strval($data['topic']);
+    $loc = new Location();
+    $loc->fillFromArray($data);
 
-    //record only if same data found at same epoch / tracker_id
-    if (!$sql->isEpochExisting($tracker_id, $epoch)) {
-
-        $result = $sql->addLocation(
-            $accuracy,
-            $altitude,
-            $battery_level,
-            $heading,
-            $description,
-            $event,
-            $latitude,
-            $longitude,
-            $radius,
-            $trig,
-            $tracker_id,
-            $epoch,
-            $vertical_accuracy,
-            $velocity,
-            $pressure,
-            $connection,
-            $topic
-        );
+    // record only if same data found at same epoch / tracker_id
+    if (!$sql->isEpochExisting($loc->tracker_id, $loc->epoch)) {
+        $result = $sql->addRecord($loc);
 
         if ($result) {
             http_response_code(200);
@@ -96,10 +45,10 @@ if ($data['_type'] == 'location' || in_array('debug', $_REQUEST)) {
         } else {
             http_response_code(500);
             $response_msg = 'Can\'t write to database';
-            _log('Insert KO - Can\'t write to database.');
+            _log('ERROR during Insert: Can\'t write to database.');
         }
     } else {
-        _log('Duplicate location found for epoc ' . $epoch . ' / tid ' . $tracker_id . ' - no insert');
+        _log('Duplicate location found for epoc ' . $loc->epoch . ' / tid ' . $loc->tracker_id . ' - no insert');
         $response_msg = 'Duplicate location found for epoch. Ignoring.';
     }
 } else {

@@ -2,6 +2,8 @@
 
 namespace OwntracksRecorder\Database;
 
+use \OwntracksRecorder\RecordType\AbstractRecordType;
+
 class AbstractDatabase
 {
     protected $db;
@@ -32,6 +34,26 @@ class AbstractDatabase
         $sql = 'SELECT epoch FROM ' . $this->prefix . 'locations WHERE tracker_id = ? AND epoch = ?';
         $result = $this->query($sql, array($trackerId, $epoch));
         return (count($result) > 0);
+    }
+
+    public function addRecord(AbstractRecordType $obj)
+    {
+        $tablename = $obj->getTableName();
+        $fieldnames = array();
+        $placeholders = array();
+        $values = array();
+        foreach ($obj as $key => $value) {
+            if (is_null($value)) {
+                continue;
+            }
+            $fieldnames[] = $key;
+            $placeholders[] = '?';
+            $values[] = $value;
+        }
+
+        $sql = 'INSERT INTO ' . $this->prefix . $tablename . ' (' . implode(', ', $fieldnames) . ') VALUES (' . implode(', ', $placeholders) . ');';
+        $result = $this->execute($sql, $values);
+        return $result;
     }
 
     public function addLocation(
