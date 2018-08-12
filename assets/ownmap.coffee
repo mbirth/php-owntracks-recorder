@@ -88,6 +88,32 @@ class window.OwnMap
             btn_showhide.state 'hide-markers'
         btn_showhide.addTo @mymap
 
+        @buttonPrev = L.easyButton
+            states: [
+                onClick: (btn, map) =>
+                    window.goPrevious()
+                title: 'Previous day'
+                icon: 'fa-arrow-circle-left'
+            ]
+        @buttonToday = L.easyButton
+            states: [
+                onClick: (btn, map) =>
+                    window.gotoDate()
+                title: 'Today'
+                icon: 'fa-hand-point-down'
+            ]
+        @buttonNext = L.easyButton
+            states: [
+                onClick: (btn, map) =>
+                    window.goNext()
+                title: 'Next day'
+                icon: 'fa-arrow-circle-right'
+            ]
+
+        L.easyBar [@buttonPrev, @buttonToday, @buttonNext],
+            position: 'bottomleft'
+        .addTo @mymap
+
         @fetchMarkers()
 
     setLayerOpacity: (opacity) ->

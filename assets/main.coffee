@@ -55,16 +55,20 @@ window.updateDateNav = (_dateFrom, _dateTo) ->
     if objNextFrom > today
         console.log 'Disabling NEXT button because %o is in the future. (Today is %o)', objNextFrom, today
         $('#nextButton').addClass 'disabled'
+        window.mymap?.buttonNext.disable()
     else
         $('#nextButton').removeClass 'disabled'
+        window.mymap?.buttonNext.enable()
 
     # disable today button if dateFrom isn't today
     if _dateFrom is today.toISOString()[...10]
         $('#todayButton').addClass 'disabled'
         $('#livemap_on').removeClass 'disabled'
+        window.mymap?.buttonToday.disable()
     else
         $('#todayButton').removeClass 'disabled'
         $('#livemap_on').addClass 'disabled'
+        window.mymap?.buttonToday.enable()
 
 window.gotoDate = (_dateFrom, _dateTo, pushState) ->
     console.log 'gotoDate: %o, %o, %o', _dateFrom, _dateTo, pushState
