@@ -65,7 +65,7 @@ if ($data['_type'] == 'location' || in_array('debug', $_REQUEST)) {
     if (array_key_exists('vel', $data)) $velocity = intval($data['vel']);
     if (array_key_exists('p', $data)) $pressure = floatval($data['p']);
     if (array_key_exists('conn', $data)) $connection = strval($data['conn']);
-    if (array_key_exists('topic', $data)) $connection = strval($data['topic']);
+    if (array_key_exists('topic', $data)) $topic = strval($data['topic']);
 
     //record only if same data found at same epoch / tracker_id
     if (!$sql->isEpochExisting($tracker_id, $epoch)) {
