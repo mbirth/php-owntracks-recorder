@@ -54,22 +54,23 @@
         },
         {
             "name": "pcrov/jsonreader",
-            "version": "0.7.1",
+            "version": "0.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pcrov/JsonReader.git",
-                "reference": "8baeee5c5c33fe514f63c9d1a06dfe98e5be2501"
+                "reference": "f97fb9a80829ef4d45430dbe65cfb7cfca2485cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pcrov/JsonReader/zipball/8baeee5c5c33fe514f63c9d1a06dfe98e5be2501",
-                "reference": "8baeee5c5c33fe514f63c9d1a06dfe98e5be2501",
+                "url": "https://api.github.com/repos/pcrov/JsonReader/zipball/f97fb9a80829ef4d45430dbe65cfb7cfca2485cb",
+                "reference": "f97fb9a80829ef4d45430dbe65cfb7cfca2485cb",
                 "shasum": ""
             },
             "require": {
                 "ext-intl": "*",
                 "pcrov/unicode": "^0.1",
-                "php": "^7.0"
+                "php": "^7.0",
+                "psr/http-message": "^1"
             },
             "require-dev": {
                 "nst/jsontestsuite": "^1",
@@ -99,7 +100,7 @@
                 "pull",
                 "streaming"
             ],
-            "time": "2018-03-13T01:07:37+00:00"
+            "time": "2018-08-02T21:53:37+00:00"
         },
         {
             "name": "pcrov/unicode",
@@ -143,6 +144,56 @@
                 "utf-8"
             ],
             "time": "2018-03-01T09:26:35+00:00"
+        },
+        {
+            "name": "psr/http-message",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-message.git",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP messages",
+            "homepage": "https://github.com/php-fig/http-message",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2016-08-06T14:39:51+00:00"
         }
     ],
     "packages-dev": [],
