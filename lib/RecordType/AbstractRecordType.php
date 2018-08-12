@@ -9,11 +9,19 @@ class AbstractRecordType implements \Iterator
     protected $fields = array();
     protected $data = array();
 
-    public function __construct()
+    public function __construct(array $arr = null)
     {
         // init empty record
         foreach ($this->fields as $key => $extkey) {
             $this->data[$key] = null;
+        }
+
+        if (!is_null($arr)) {
+            foreach ($arr as $key => $value) {
+                if (array_key_exists($key, $this->data)) {
+                    $this->data[$key] = $value;
+                }
+            }
         }
     }
 
@@ -25,6 +33,16 @@ class AbstractRecordType implements \Iterator
     public function __get($key)
     {
         return $this->data[$key];
+    }
+
+    public function __set($key, $value)
+    {
+        if (array_key_exists($key, $this->fields)) {
+            if (!is_null($this->fields[$key])) {
+                settype($value, $this->fields[$key][1]);
+            }
+            $this->data[$key] = $value;
+        }
     }
 
     public function rewind()
@@ -69,5 +87,19 @@ class AbstractRecordType implements \Iterator
                 $this->data[$key] = $val;
             }
         }
+    }
+
+    public function getJSON()
+    {
+        $result = array(
+            '_type' => $this->type,
+        );
+        foreach ($this->fields as $key => $extdata) {
+            if (is_null($extdata) || is_null($this->data[$key])) {
+                continue;
+            }
+            $result[$extdata[0]] = $this->data[$key];
+        }
+        return $result;
     }
 }

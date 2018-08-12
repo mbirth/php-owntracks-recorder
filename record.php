@@ -61,24 +61,7 @@ $response = array();
 // Build list of buddies' last locations
 $buddies = $sql->getAllLatestMarkers();
 foreach ($buddies as $buddy) {
-    $loc = array(
-        '_type' => 'location',
-        'acc' => $buddy['accuracy'],
-        'alt' => $buddy['altitude'],
-        'batt' => $buddy['battery_level'],
-        'cog' => $buddy['heading'],
-        'lat' => $buddy['latitude'],
-        'lon' => $buddy['longitude'],
-        'rad' => $buddy['radius'],
-        't' => $buddy['trig'],
-        'tid' => strval($buddy['tracker_id']),
-        'tst' => $buddy['epoch'],
-        'vac' => $buddy['vertical_accuracy'],
-        'vel' => $buddy['velocity'],
-        'p' => $buddy['pressure'],
-        'conn' => $buddy['connection'],
-    );
-    $response[] = $loc;
+    $response[] = $buddy->getJSON();
 }
 
 if (!is_null($response_msg)) {

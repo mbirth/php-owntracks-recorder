@@ -21,12 +21,12 @@ class Location extends AbstractRecordType
         'heading'      => array('cog', 'int'),
         'description'  => array('desc', 'string'),
         'event'        => array('event', 'string'),
-        'latitude'     => array('lat', 'float'),
-        'longitude'    => array('lon', 'float'),
+        'latitude'     => array('lat', 'float'),   // required in JSON
+        'longitude'    => array('lon', 'float'),   // required in JSON
         'radius'       => array('rad', 'int'),
         'trig'         => array('t', 'string'),
-        'tracker_id'   => array('tid', 'string'),
-        'epoch'        => array('tst', 'int'),
+        'tracker_id'   => array('tid', 'string'),   // required in JSON (http)
+        'epoch'        => array('tst', 'int'),   // required in JSON
         'vertical_accuracy' => array('vac', 'int'),
         'velocity'     => array('vel', 'int'),
         'pressure'     => array('p', 'float'),
