@@ -11,6 +11,7 @@ use \pcrov\JsonReader\JsonReader;
 use \pcrov\JsonReader\InputStream\Stream;
 use \OwntracksRecorder\Database\MySql;
 use \OwntracksRecorder\Database\SQLite;
+use \OwntracksRecorder\RecordType\Location;
 
 $fs = filesize($INPUT_FILE);
 $fp = fopen($INPUT_FILE, 'rb');
@@ -49,50 +50,19 @@ do {
 
     #print_r($data);
 
-    $accuracy = null;
-    $altitude = null;
-    $battery_level = null;
-    $heading = null;
-    $description = null;
-    $event = null;
-    $latitude = null;
-    $longitude = null;
-    $radius = null;
-    $trig = null;
-    $tracker_id = null;
-    $epoch = null;
-    $vertical_accuracy = null;
-    $velocity = null;
-    $pressure = null;
-    $connection = 'i';   // i = imported
+    $loc = new Location();
+    $loc->connection = 'i';   // i = imported
 
-    if (array_key_exists('accuracy', $data)) $accuracy = intval($data['accuracy']);
-    if (array_key_exists('altitude', $data)) $altitude = intval($data['altitude']);
-    if (array_key_exists('heading', $data)) $heading = intval($data['heading']);
-    $latitude = floatval($data['latitudeE7']) / 1e7;
-    $longitude = floatval($data['longitudeE7']) / 1e7;
-    $epoch = (int)floor(intval($data['timestampMs']) / 1000);
-    if (array_key_exists('verticalAccuracy', $data)) $vertical_accuracy = intval($data['verticalAccuracy']);
-    if (array_key_exists('velocity', $data)) $velocity = intval(floatval($data['velocity'])*3.6);   // metres per second to km/h
+    if (array_key_exists('accuracy', $data)) $loc->accuracy = intval($data['accuracy']);
+    if (array_key_exists('altitude', $data)) $loc->altitude = intval($data['altitude']);
+    if (array_key_exists('heading', $data)) $loc->heading = intval($data['heading']);
+    $loc->latitude = floatval($data['latitudeE7']) / 1e7;
+    $loc->longitude = floatval($data['longitudeE7']) / 1e7;
+    $loc->epoch = (int)floor(intval($data['timestampMs']) / 1000);
+    if (array_key_exists('verticalAccuracy', $data)) $loc->vertical_accuracy = intval($data['verticalAccuracy']);
+    if (array_key_exists('velocity', $data)) $loc->velocity = intval(floatval($data['velocity'])*3.6);   // metres per second to km/h
 
-    $sql->addLocation(
-        $accuracy,
-        $altitude,
-        $battery_level,
-        $heading,
-        $description,
-        $event,
-        $latitude,
-        $longitude,
-        $radius,
-        $trig,
-        $TRACKER_ID,
-        $epoch,
-        $vertical_accuracy,
-        $velocity,
-        $pressure,
-        $connection
-    );
+    $sql->addRecord($loc);
 
     $i++;
     if ($i%2000 == 0) {

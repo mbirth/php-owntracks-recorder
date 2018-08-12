@@ -56,33 +56,6 @@ class AbstractDatabase
         return $result;
     }
 
-    public function addLocation(
-        int $accuracy = null,
-        int $altitude = null,
-        int $battery_level = null,
-        int $heading = null,
-        string $description = null,
-        string $event = null,
-        float $latitude,
-        float $longitude,
-        int $radius = null,
-        string $trig = null,
-        string $tracker_id = null,
-        int $epoch,
-        int $vertical_accuracy = null,
-        int $velocity = null,
-        float $pressure = null,
-        string $connection = null,
-        string $topic = null,
-        int $place_id = null,
-        int $osm_id = null
-    ): bool {
-        $sql = 'INSERT INTO ' . $this->prefix . 'locations (accuracy, altitude, battery_level, heading, description, event, latitude, longitude, radius, trig, tracker_id, epoch, vertical_accuracy, velocity, pressure, connection, topic, place_id, osm_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        $params = array($accuracy, $altitude, $battery_level, $heading, $description, $event, $latitude, $longitude, $radius, $trig, $tracker_id, $epoch, $vertical_accuracy, $velocity, $pressure, $connection, $topic, $place_id, $osm_id);
-        $result = $this->execute($sql, $params);
-        return $result;
-    }
- 
     public function getMarkers(int $time_from, int $time_to, int $min_accuracy = 1000): array
     {
         $sql = 'SELECT * FROM ' . $this->prefix . 'locations WHERE epoch >= ? AND epoch <= ? AND accuracy < ? AND altitude >=0 ORDER BY tracker_id, epoch ASC';
