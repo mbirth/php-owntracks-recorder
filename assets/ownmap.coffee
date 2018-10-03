@@ -16,8 +16,19 @@ class window.OwnMap
         @live_view = false
         @live_view_timer = false
 
+        apikey_tf = '?apikey=' + '00000000000000000000000000000000'
+
+        # Taken from: https://wiki.openstreetmap.org/wiki/Tile_servers 
         layers =
             'OpenStreetMap': L.tileLayer 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                subdomains: 'abc'
+                detectRetina: true
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            'OSM B&W': L.tileLayer 'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
+                subdomains: 'abc'
+                detectRetina: true
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            'OSM No Labels': L.tileLayer 'http://{s}.tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png',
                 subdomains: 'abc'
                 detectRetina: true
                 attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -25,6 +36,29 @@ class window.OwnMap
                 subdomains: 'abc'
                 detectRetina: true
                 attribution: '© <a href="https://www.openstreetmap.de/faq.html#lizenz">OpenStreetMap</a>'
+            'OSM/FR': L.tileLayer 'http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+                subdomains: 'abc'
+                detectRetina: true
+            'Carto Dark': L.tileLayer 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png',
+                subdomains: 'abcd'
+                attribution: 'Map tiles by <a href="https://carto.com/">Carto</a>, under CC BY 3.0. Data by OpenStreetMap, under ODbL.'
+            'Carto Light': L.tileLayer 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png',
+                subdomains: 'abcd'
+                attribution: 'Map tiles by <a href="https://carto.com/">Carto</a>, under CC BY 3.0. Data by OpenStreetMap, under ODbL.'
+            'ESRI Satellite': L.tileLayer 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                detectRetina: true
+                attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            'ESRI Streets': L.tileLayer 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+                detectRetina: true
+                attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            'Hike&amp;Bike': L.tileLayer 'http://{s}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
+                subdomains: 'abc'
+                detectRetina: true
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            'Humanitarian Map': L.tileLayer 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+                subdomains: 'ab'
+                detectRetina: true
+                attribution: '<a href="https://wiki.openstreetmap.org/wiki/Humanitarian_map_style">Map tile info</a>'
             'MapSurfer': L.tileLayer 'https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}',
                 detectRetina: true
                 attribution: '<a href="http://korona.geog.uni-heidelberg.de/contact.html">GIScience Heidelberg</a>'
@@ -33,28 +67,47 @@ class window.OwnMap
                 detectRetina: true
                 maxZoom: 17
                 attribution: 'Map data: © <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM | Map tiles: © <a href="http://opentopomap.org/">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-            'Hike&amp;Bike': L.tileLayer 'http://{s}.tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
-                subdomains: 'abc'
-                detectRetina: true
-                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            'Stamen Toner': L.tileLayer 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png',
+            'Stamen Toner': L.tileLayer 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}{r}.png',
                 subdomains: 'abcd'
-                detectRetina: true
                 attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
             'Stamen Watercolor': L.tileLayer 'http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg',
                 subdomains: 'abcd'
                 detectRetina: true
                 attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
+            'Thunderforest OpenCycleMap': L.tileLayer 'http://tile.thunderforest.com/cycle/{z}/{x}/{y}{r}.png' + apikey_tf,
+                attribution: 'Map tiles by <a href="https://wiki.openstreetmap.org/wiki/OpenCycleMap">OpenCycleMap</a>'
+            'Thunderforest Landscape': L.tileLayer 'http://tile.thunderforest.com/landscape/{z}/{x}/{y}{r}.png' + apikey_tf
+            'Thunderforest Mobile Atlas': L.tileLayer 'http://tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}{r}.png' + apikey_tf
+            'Thunderforest Neighbourhood': L.tileLayer 'http://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}{r}.png' + apikey_tf
+            'Thunderforest Outdoors': L.tileLayer 'http://tile.thunderforest.com/outdoors/{z}/{x}/{y}{r}.png' + apikey_tf
+            'Thunderforest Pioneer': L.tileLayer 'http://tile.thunderforest.com/pioneer/{z}/{x}/{y}{r}.png' + apikey_tf
+            'Thunderforest Spinal': L.tileLayer 'http://tile.thunderforest.com/spinal-map/{z}/{x}/{y}{r}.png' + apikey_tf
+            'Thunderforest Transport': L.tileLayer 'http://tile.thunderforest.com/transport/{z}/{x}/{y}{r}.png' + apikey_tf
+            'Thunderforest Transport Dark': L.tileLayer 'http://tile.thunderforest.com/transport-dark/{z}/{x}/{y}{r}.png' + apikey_tf
             'TopPlusOpen': L.tileLayer 'http://sgx.geodatenzentrum.de/wmts_topplus_web_open/tile/1.0.0/web/default/WEBMERCATOR/{z}/{y}/{x}.png',
                 detectRetina: true
                 attribution: '© <a href="http://www.bkg.bund.de/">Bundesamt für Kartographie und Geodäsie</a> 2018, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf">Datenquellen</a>'
-            'ESRI Satellite': L.tileLayer 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                detectRetina: true
-                attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            'Wikimedia': L.tileLayer 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png',
+                attribution: 'Map tiles by <a href="https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use">Wikimedia Foundation</a>'
 
         overlays =
             'Hillshades': L.tileLayer 'http://{s}.tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png',
                 subdomains: ['a', 'b', 'c']
+                detectRetina: true
+            'OpenSeaMap': L.tileLayer 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
+                detectRetina: true
+            'waymarkedtrails Cycling': L.tileLayer 'https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png',
+                detectRetina: true
+                attribution: 'Map tiles by <a href="https://wiki.openstreetmap.org/wiki/User:Lonvia">Sarah Hoffmann</a>'
+            'waymarkedtrails Hiking': L.tileLayer 'https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png',
+                detectRetina: true
+                attribution: 'Map tiles by <a href="https://wiki.openstreetmap.org/wiki/User:Lonvia">Sarah Hoffmann</a>'
+            'waymarkedtrails MTB': L.tileLayer 'https://tile.waymarkedtrails.org/mtb/{z}/{x}/{y}.png',
+                detectRetina: true
+                attribution: 'Map tiles by <a href="https://wiki.openstreetmap.org/wiki/User:Lonvia">Sarah Hoffmann</a>'
+            'waymarkedtrails Skating': L.tileLayer 'https://tile.waymarkedtrails.org/skating/{z}/{x}/{y}.png',
+                detectRetina: true
+                attribution: 'Map tiles by <a href="https://wiki.openstreetmap.org/wiki/User:Lonvia">Sarah Hoffmann</a>'
 
         @mymap = L.map 'mapid',
             center: [52.52, 13.44]

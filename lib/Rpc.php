@@ -33,20 +33,20 @@ class Rpc
         if (!array_key_exists('dateFrom', $_GET)) {
             $_GET['dateFrom'] = date('Y-m-d') . 'T00:00:00';
         }
-    
+
         if (!array_key_exists('dateTo', $_GET)) {
             $_GET['dateTo'] = date('Y-m-d') . 'T23:59:59';
         }
-    
+
         if (array_key_exists('accuracy', $_GET) && $_GET['accuracy'] > 0) {
             $accuracy = intval($_GET['accuracy']);
         } else {
             $accuracy = $_config['default_accuracy'];
         }
-    
+
         $time_from = strtotime($_GET['dateFrom']);
         $time_to = strtotime($_GET['dateTo']);
-    
+
         $markers = $this->sql->getMarkers($time_from, $time_to, $accuracy);
 
         if ($markers === false) {
@@ -110,23 +110,23 @@ class Rpc
 
         $latitude = $marker['latitude'];
         $longitude = $marker['longitude'];
-        
+
         // GEO DECODE LAT & LONG
         $geo_decode_url = $_config['geo_reverse_lookup_url'] . 'lat=' . $latitude . '&lon=' . $longitude;
         $geo_decode_json = file_get_contents($geo_decode_url);
         $geo_decode = @json_decode($geo_decode_json, true);
-    
+
         $place_id = intval($geo_decode['place_id']);
         $osm_id = intval($geo_decode['osm_id']);
         $location = strval($geo_decode['display_name']);
-        
+
         if ($location == '') {
             $location = @json_encode($geo_decode);
         }
-        
+
         // UPDATE MARKER WITH GEODECODED LOCATION
         $result = $this->sql->updateLocationData((int)$_REQUEST['lid'], (float)$latitude, (float)$longitude, $location, $place_id, $osm_id);
-        
+
         if ($result === false) {
             http_response_code(500);
             return array(
