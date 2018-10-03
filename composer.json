@@ -15,11 +15,11 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "bower install",
+            "yarn install",
             "@coffee"
         ],
         "coffee": [
-            "bower_components/coffeescript/bin/coffee -m -c assets/*.coffee"
+            "node_modules/coffeescript/bin/coffee -m -c assets/*.coffee"
         ]
     }
 }
