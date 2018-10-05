@@ -9,12 +9,16 @@
   ],
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/mbirth/php-owntracks-recorder",
-  "keywords": ["owntracks", "latitude", "geolocation"],
+  "keywords": [
+    "owntracks",
+    "latitude",
+    "geolocation"
+  ],
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.3.1",
     "bootstrap": "^4.1.3",
     "coffeescript": "^2.3.2",
-    "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "js-cookie": "^2.2.0",
     "leaflet": "^1.3.4",
