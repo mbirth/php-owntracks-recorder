@@ -2,7 +2,7 @@ PRAGMA journal_mode=WAL;
 
 CREATE TABLE "locations" (
   "lid" INTEGER PRIMARY KEY AUTOINCREMENT,
-  "dt" INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "dt" INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
   "accuracy" INTEGER,
   "altitude" INTEGER,
   "battery_level" INTEGER,
