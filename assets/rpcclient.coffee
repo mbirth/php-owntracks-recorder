@@ -4,12 +4,12 @@ class window.RpcClient
         @url = url
         @markers = {}
 
-    getMarkers: (dateFromYMD, dateToYMD, accuracy) ->
-        console.log 'RpcClient::getMarkers(%o, %o, %o)', dateFromYMD, dateToYMD, accuracy
+    getMarkers: (dateFrom, dateTo, accuracy) ->
+        console.log 'RpcClient::getMarkers(%o, %o, %o)', dateFrom, dateTo, accuracy
         params =
             'action': 'getMarkers'
-            'dateFrom': dateFromYMD + 'T00:00:00'
-            'dateTo': dateToYMD + 'T23:59:59'
+            'dateFrom': dateFrom
+            'dateTo': dateTo
             'accuracy': accuracy
             #'trackerID' : trackerID
             #'epoc': time()

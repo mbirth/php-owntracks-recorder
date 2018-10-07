@@ -12,16 +12,16 @@ class window.MarkerMgr
         @lines_drawn = {}
         @filter_tids = []
 
-    fetchMarkers: (dateFromYMD, dateToYMD, accuracy) ->
-        console.log 'MarkerMgr::fetchMarkers(%o, %o, %o)', dateFromYMD, dateToYMD, accuracy
+    fetchMarkers: (dateFrom, dateTo, accuracy) ->
+        console.log 'MarkerMgr::fetchMarkers(%o, %o, %o)', dateFrom, dateTo, accuracy
         # TODO: Use stored query values if parameters omitted
-        return @rpcclient.getMarkers dateFromYMD, dateToYMD, accuracy
+        return @rpcclient.getMarkers dateFrom, dateTo, accuracy
             .then (data) =>
                 console.log 'MarkerMgr::fetchMarkers got: %o', data
                 @markers_old = @markers
                 @markers = data
-                @dateFrom = dateFromYMD
-                @dateTo = dateToYMD
+                @dateFrom = dateFrom
+                @dateTo = dateTo
                 @accuracy = accuracy
                 return data
 

@@ -9,6 +9,13 @@ window.goPrevious = ->
 window.goNext = ->
     window.gotoDate window.dateNextFrom, window.dateNextTo
 
+getDateAsLocalISO = (_date) ->
+    console.log 'getDateAsLocalISO(%o)', _date
+    dateobj = new Date _date
+    tzoffset = dateobj.getTimezoneOffset() * 60000
+    isoString = new Date(dateobj - tzoffset).toISOString()
+    return isoString[...-1]   # strip the "Z" (UTC indicator)
+
 getToday = ->
     today = new Date
     today.setHours 0
@@ -33,21 +40,19 @@ window.updateDateNav = (_dateFrom, _dateTo) ->
     #console.log 'Current range: %o - %o (%o)', _dateFrom, _dateTo, span
     #console.log 'Objects: %o - %o', objFrom, objTo
 
-    objPrevTo = new Date objFrom.getTime()
-    objPrevTo.setUTCDate objPrevTo.getUTCDate() - 1   # get day before current "dateFrom"
+    objPrevTo = new Date objFrom.getTime() - 1000       # 1 second before current window
     objPrevFrom = new Date objPrevTo.getTime() - span   # calculate span
 
-    window.datePrevFrom = objPrevFrom.toISOString()[...10]
-    window.datePrevTo   = objPrevTo.toISOString()[...10]
+    window.datePrevFrom = objPrevFrom.toISOString()
+    window.datePrevTo   = objPrevTo.toISOString()
 
     #console.log 'PREV button will go to: %o - %o', window.datePrevFrom, window.datePrevTo
 
-    objNextFrom = new Date objTo.getTime()
-    objNextFrom.setUTCDate objNextFrom.getUTCDate() + 1   # get day after current "dateTo"
+    objNextFrom = new Date objTo.getTime() + 1000         # 1 second after current window
     objNextTo   = new Date objNextFrom.getTime() + span   # calculate span
 
-    window.dateNextFrom = objNextFrom.toISOString()[...10]
-    window.dateNextTo   = objNextTo.toISOString()[...10]
+    window.dateNextFrom = objNextFrom.toISOString()
+    window.dateNextTo   = objNextTo.toISOString()
 
     #console.log 'NEXT button will go to: %o - %o', window.dateNextFrom, window.dateNextTo
 
@@ -74,15 +79,15 @@ window.gotoDate = (_dateFrom, _dateTo, pushState) ->
     console.log 'gotoDate: %o, %o, %o', _dateFrom, _dateTo, pushState
 
     today = getToday().toISOString()[...10]
-    _dateFrom = _dateFrom ? today
-    _dateTo = _dateTo ? today
+    _dateFrom = _dateFrom ? (today + "T00:00:00")
+    _dateTo = _dateTo ? (today + "T23:59:59")
     pushState = pushState ? true
 
     window.dateFrom = _dateFrom
     window.dateTo = _dateTo
-    
-    $('#dateFrom').val window.dateFrom
-    $('#dateTo').val window.dateTo
+
+    $('#dateFrom').val ((getDateAsLocalISO window.dateFrom)[...10])
+    $('#dateTo').val ((getDateAsLocalISO window.dateTo)[...10])
 
     # push selected dates in window.history stack
     if pushState
@@ -99,13 +104,13 @@ window.gotoDate = (_dateFrom, _dateTo, pushState) ->
 
 window.gotoAccuracy = ->
     console.log 'gotoAccuracy'
-    
+
     _accuracy = parseInt $('#accuracy').val()
 
     if _accuracy != window.accuracy
         Cookies.set 'accuracy', _accuracy
         console.log 'Accuracy cookie = %o', Cookies.get 'accuracy'
-        
+
         window.accuracy = _accuracy
         window.mymap.fetchMarkers()
     else
@@ -123,21 +128,21 @@ window.initUI = ->
 
     _GET = new URLSearchParams window.location.search
 
-    today = new Date().toISOString()[...10]
+    today = getDateAsLocalISO(new Date())
 
     # sanitise date input
     try
-        window.dateFrom = if _GET.has 'dateFrom' then new Date(_GET.get 'dateFrom').toISOString()[...10] else today
+        window.dateFrom = if _GET.has 'dateFrom' then new Date(_GET.get 'dateFrom').toISOString() else (today[...11] + "00:00:00")
     catch err
         window.dateFrom = today
 
     try
-        window.dateTo = if _GET.has 'dateTo' then new Date(_GET.get 'dateTo').toISOString()[...10] else today
+        window.dateTo = if _GET.has 'dateTo' then new Date(_GET.get 'dateTo').toISOString() else (today[...11] + "23:59:59")
     catch err
         window.dateTo = today
 
-    $('#dateFrom').val window.dateFrom
-    $('#dateTo').val window.dateTo
+    $('#dateFrom').val ((getDateAsLocalISO window.dateFrom)[...10])
+    $('#dateTo').val ((getDateAsLocalISO window.dateTo)[...10])
 
     # date params event handlers
     updateDateNav()
