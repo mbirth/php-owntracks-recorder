@@ -10,9 +10,6 @@ class window.OwnMap
             @markermgr.setFilter [selected_tid]
 
         @map_drawn = false
-        @default_zoom = 15
-        @default_centre = [0, 0]
-
         @live_view = false
         @live_view_timer = false
 
@@ -189,7 +186,7 @@ class window.OwnMap
                 if @drawMap()
                     $('#mapid').css 'filter', 'blur(0px)'
 
-    drawMap: ->
+    drawMap: (rezoom = true) ->
         console.log 'OwnMap::drawMap()'
         if @map_drawn
             @markermgr.removeMarkersFrom @mymap
@@ -199,18 +196,10 @@ class window.OwnMap
         @markermgr.addMarkersTo @mymap
         @markermgr.addLinesTo @mymap
 
-        # save default zoom scale
-        @setDefaultZoom()
-        # auto zoom scale based on all markers location
-        @mymap.fitBounds @markermgr.getMarkerBounds()
-        @map_drawn = true
+        if rezoom
+            @resetZoom()
 
-    setDefaultZoom: ->
-        console.log 'OwnMap::setDefaultZoom()'
-        setTimeout =>
-            @default_zoom = @mymap.getZoom()
-            @default_centre = @mymap.getCenter()
-        , 2000
+        @map_drawn = true
 
     setMarkerFilter: (tid) ->
         console.log 'OwnMap::setMarkerFilter(%o)', tid
@@ -225,17 +214,18 @@ class window.OwnMap
         console.log 'OwnMap::showMarkers()'
         @markermgr.startstop_only = false
         Cookies.set 'show_markers', 1, { expires: 365 }
-        @drawMap()
+        @drawMap false
 
     hideMarkers: ->
         console.log 'OwnMap::hideMarkers()'
         @markermgr.startstop_only = true
         Cookies.set 'show_markers', 0, { expires: 365 }
-        @drawMap()
+        @drawMap false
 
     resetZoom: ->
         console.log 'OwnMap::resetZoom()'
-        @mymap.setView @default_centre, @default_zoom
+        # auto zoom scale based on all markers location
+        @mymap.fitBounds @markermgr.getMarkerBounds()
 
     exportGpx: ->
         console.log 'OwnMap::exportGpx()'
