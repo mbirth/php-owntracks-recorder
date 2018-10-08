@@ -52,6 +52,7 @@ do {
 
     $loc = new Location();
     $loc->connection = 'i';   // i = imported
+    $loc->tracker_id = $TRACKER_ID;
 
     if (array_key_exists('accuracy', $data)) $loc->accuracy = intval($data['accuracy']);
     if (array_key_exists('altitude', $data)) $loc->altitude = intval($data['altitude']);
