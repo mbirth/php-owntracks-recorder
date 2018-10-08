@@ -83,8 +83,12 @@ window.gotoDate = (_dateFrom, _dateTo, pushState) ->
     _dateTo = _dateTo ? (today + "T23:59:59")
     pushState = pushState ? true
 
-    window.dateFrom = _dateFrom
-    window.dateTo = _dateTo
+    if _dateTo.length < 12
+        console.log "DateTo %o has no time, assuming 23:59:59", _dateTo
+        _dateTo += "T23:59:59"
+
+    window.dateFrom = new Date(_dateFrom).toISOString()
+    window.dateTo = new Date(_dateTo).toISOString()
 
     $('#dateFrom').val ((getDateAsLocalISO window.dateFrom)[...10])
     $('#dateTo').val ((getDateAsLocalISO window.dateTo)[...10])
@@ -131,15 +135,29 @@ window.initUI = ->
     today = getDateAsLocalISO(new Date())
 
     # sanitise date input
+    getDateFrom = today[...11]
     try
-        window.dateFrom = if _GET.has 'dateFrom' then new Date(_GET.get 'dateFrom').toISOString() else (today[...11] + "00:00:00")
-    catch err
-        window.dateFrom = today
+        if _GET.has 'dateFrom'
+            getDateFrom = _GET.get 'dateFrom'
+    catch
+        getDateFrom = today[...11]
+    if getDateFrom.length < 12
+        getDateFrom += "00:00:00"
+    console.log 'getDateFrom: %o', getDateFrom
+    window.dateFrom = new Date(getDateFrom).toISOString()
 
+    getDateTo = today[...11]
     try
-        window.dateTo = if _GET.has 'dateTo' then new Date(_GET.get 'dateTo').toISOString() else (today[...11] + "23:59:59")
-    catch err
-        window.dateTo = today
+        if _GET.has 'dateTo'
+            getDateTo = _GET.get 'dateTo'
+    catch
+        getDateTo = today[...11]
+    if getDateTo.length < 12
+        getDateTo += "23:59:59"
+    window.dateTo = new Date(getDateTo).toISOString()
+
+    #console.log "dateFrom now: %o", window.dateFrom
+    #console.log "dateTo now: %o", window.dateTo
 
     $('#dateFrom').val ((getDateAsLocalISO window.dateFrom)[...10])
     $('#dateTo').val ((getDateAsLocalISO window.dateTo)[...10])
