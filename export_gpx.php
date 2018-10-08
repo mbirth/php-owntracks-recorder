@@ -9,6 +9,7 @@ require_once 'vendor/autoload.php';
 use \OwntracksRecorder\Database\MySql;
 use \OwntracksRecorder\Database\SQLite;
 use \OwntracksRecorder\RecordType\Location;
+use \OwntracksRecorder\Gpx;
 use \OwntracksRecorder\Rpc;
 
 $response = array();
@@ -27,35 +28,9 @@ $rpc = new Rpc($sql);
 $markers = $rpc->getMarkers();
 
 
-#header("Content-type: application/javascript");
-
-$dom = new \DOMDocument('1.0', 'utf-8');
-$dom->formatOutput = true;
-$gpx = $dom->createElement('gpx');
-$gpx->setAttribute('creator', 'php-owntracks-recorder');
-$gpx->setAttribute('version', '1.1');
-$gpx->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.topografix.com/GPX/1/1');
-$gpx->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-$gpx->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:ns2', 'http://www.garmin.com/xmlschemas/GpxExtensions/v3');
-$gpx->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:ns3', 'http://www.garmin.com/xmlschemas/TrackPointExtension/v1');
-$gpx->setAttribute('xsi:schemaLocation', 'http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/11.xsd');
-
-# METADATA
-$meta = $dom->createElement('metadata');
-$link = $dom->createElement('link');
-$link->setAttribute('href', 'github.com');
-$link->appendChild($dom->createElement('text', 'php-owntracks-recorder'));
-$meta->appendChild($link);
-$meta->appendChild($dom->createElement('time', date('c')));
-$gpx->appendChild($meta);
-
-# TRACK INFO
-$trk = $dom->createElement('trk');
-$trk->appendChild($dom->createElement('name', 'Exported Track'));
-$trk->appendChild($dom->createElement('type', 'other'));
-
-# TRACK SEGMENT
-$trkseg = $dom->createElement('trkseg');
+$gpx = new Gpx();
+$gpx->addLink('github.com', 'php-owntracks-recorder');
+$gpx->addTrack('Exported Track', 'other');
 
 foreach ($markers['markers'] as $tid => $markerList) {
     foreach ($markerList as $marker) {
@@ -64,13 +39,11 @@ foreach ($markers['markers'] as $tid => $markerList) {
 
         $trkpt = $lo->getGpxDom();
 
-        $trkpti = $dom->importNode($trkpt->documentElement, true);
-        $trkseg->appendChild($trkpti);
+        $gpx->addPoint($trkpt->documentElement);
     }
 }
 
-$trk->appendChild($trkseg);
-$gpx->appendChild($trk);
-$dom->appendChild($gpx);
+header('Content-type: application/gpx+xml');
+header('Content-Disposition: attachment; filename=export.gpx');
 
-echo $dom->saveXML();
+echo $gpx->getXml();
