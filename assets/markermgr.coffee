@@ -25,6 +25,14 @@ class window.MarkerMgr
                 @accuracy = accuracy
                 return data
 
+    exportGpx: (dateFrom, dateTo, accuracy) ->
+        console.log 'MarkerMgr::exportGpx(%o, %o, %o)', dateFrom, dateTo, accuracy
+        params =
+            'dateFrom': dateFrom
+            'dateTo': dateTo
+            'accuracy': accuracy
+        window.open 'export_gpx.php?' + $.param(params), '_blank'
+
     getTrackerIds: ->
         return Object.keys @markers
 
@@ -68,7 +76,7 @@ class window.MarkerMgr
             newDate = new Date()
             newDate.setTime marker.epoch * 1000
             dateString = newDate.toLocaleString()
-        
+
         accuracyString = "<br/>Accuracy: #{marker.accuracy} m"
         headingString = if marker.heading? then "<br/>Heading: #{marker.heading}°" else ''
         velocityString = if marker.velocity? then "<br/>Velocity: #{marker.velocity} km/h" else ''
@@ -77,9 +85,9 @@ class window.MarkerMgr
             locationString = "<br/>Location: <a href=\"#\" onclick=\"showBoundingBox(#{marker.lid});\" title=\"Show location bounding box\">#{marker.display_name}</a>"
         else
             locationString = "<br/>Location: <span id=\"loc_#{marker.lid}\"><a href=\"#\" onclick=\"geodecodeMarker(#{marker.lid});\" title=\"Get location (geodecode)\">Get location</a></span>"
-        
+
         removeString = "<br/><br/><a href=\"#\" onclick=\"deleteMarker(#{marker.lid});\">Delete marker</a>"
-        
+
         # prepare popup HTML code for marker
         popupString = dateString + trackerIDString + accuracyString + headingString + velocityString + locationString + removeString
         return popupString
@@ -160,7 +168,7 @@ class window.MarkerMgr
                 outlineWidth: 0.5
             .addTo map
             @lines_drawn[mapid].push line
-        
+
     removeLinesFrom: (map) ->
         console.log 'MarkerMgr::removeLinesFrom(%o)', map
         mapid = map.getContainer().id

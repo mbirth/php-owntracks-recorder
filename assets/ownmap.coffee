@@ -141,6 +141,11 @@ class window.OwnMap
             btn_showhide.state 'hide-markers'
         btn_showhide.addTo @mymap
 
+        L.easyButton '<strong>gpx</strong>', (btn, map) =>
+            @exportGpx()
+        , 'Export GPX'
+        .addTo @mymap
+
         @buttonPrev = L.easyButton
             states: [
                 onClick: (btn, map) =>
@@ -231,6 +236,10 @@ class window.OwnMap
     resetZoom: ->
         console.log 'OwnMap::resetZoom()'
         @mymap.setView @default_centre, @default_zoom
+
+    exportGpx: ->
+        console.log 'OwnMap::exportGpx()'
+        @markermgr.exportGpx window.dateFrom, window.dateTo, window.accuracy
 
     toggleLiveView: ->
         console.log 'OwnMap::toggleLiveView()'

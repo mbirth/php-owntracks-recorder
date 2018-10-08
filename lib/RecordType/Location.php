@@ -36,4 +36,47 @@ class Location extends AbstractRecordType
         'osm_id'       => null,
         'display_name' => null,
     );
+
+    public function getGpxDom()
+    {
+        $dom = new \DOMDocument('1.0', 'utf-8');
+        $trkpt = $dom->createElement('trkpt');
+        $trkpt->setAttribute('lat', $this->data['latitude']);
+        $trkpt->setAttribute('lon', $this->data['longitude']);
+
+        $ext = $dom->createElement('extensions');
+
+        $trkpt->appendChild($dom->createElement('time', date('c', intval($this->data['epoch']))));
+        $ext->appendChild($dom->createElement('epoch', $this->data['epoch']));
+
+        $trkpt->appendChild($dom->createElement('ele', $this->data['altitude']));
+
+        # GDOP
+        # <1 - ideal
+        # 1-2 - excellent
+        # 2-5 - good
+        # 5-10 - moderate
+        # 10-20 - fair (rough estimate of location)
+        # >20 - poor (should be discarded)
+        $hdop = intval($this->data['accuracy']) / 5;
+        $trkpt->appendChild($dom->createElement('hdop', $hdop));
+        $ext->appendChild($dom->createElement('acc', $this->data['accuracy']));
+
+        $vdop = intval($this->data['vertical_accuracy']) / 5;
+        $trkpt->appendChild($dom->createElement('vdop', $vdop));
+        $ext->appendChild($dom->createElement('vacc', $this->data['vertical_accuracy']));
+
+        if (!is_null($this->data['heading'])) {
+            $ext->appendChild($dom->createElement('hdg', $this->data['heading']));
+        }
+
+        if ($this->data['velocity'] > 0) {
+            $ext->appendChild($dom->createElement('spd_mps', intval($this->data['velocity'])));
+            $ext->appendChild($dom->createElement('spd_kph', intval($this->data['velocity']) * 3.6));
+        }
+
+        $trkpt->appendChild($ext);
+        $dom->appendChild($trkpt);
+        return $dom;
+    }
 }

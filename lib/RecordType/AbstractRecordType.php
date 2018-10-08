@@ -75,6 +75,15 @@ class AbstractRecordType implements \Iterator
         return $this->table;
     }
 
+    public function fillFromDbArray($arr)
+    {
+        foreach ($this->fields as $key => $extinfo) {
+            if (array_key_exists($key, $arr)) {
+                $this->data[$key] = $arr[$key];
+            }
+        }
+    }
+
     public function fillFromArray($arr)
     {
         foreach ($this->fields as $key => $extinfo) {
