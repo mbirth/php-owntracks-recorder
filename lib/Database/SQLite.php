@@ -9,6 +9,7 @@ class SQLite extends AbstractDatabase
     public function __construct($db, $hostname = null, $username = null, $password = null, $prefix = '')
     {
         $this->db = new \PDO('sqlite:' . $db);
+        $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->prefix = '';
         $this->execute('PRAGMA foreign_keys = ON;');
     }
